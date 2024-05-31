@@ -1,5 +1,16 @@
-import logo from '../../assets/images/logo.png';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+// import logo from '../../assets/images/logo.png';
 function SignUp() {
+  const [district, setDistrict] = useState([]);
+  useEffect(() => {
+    (async() => {
+      const res = await fetch('/districts.json');
+      const data = await res.json();
+      setDistrict(data[2].data);
+    })()
+  }, [])
+  console.log(district);
   return (
     <div>
       <section className="bg-white">
@@ -43,7 +54,7 @@ function SignUp() {
               <input
                 type="text"
                 className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-                placeholder="Username"
+                placeholder="Name"
               />
             </div>
 
@@ -94,6 +105,67 @@ function SignUp() {
                 className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 placeholder="Email address"
               />
+            </div>
+            <div className="relative flex items-center">
+              <div className="relative mt-4">
+                <select className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                  <option value="" defaultValue=''>
+                    Select Blood Group
+                  </option>
+                  <option value="A+">A+</option>
+                  <option value="A-">A-</option>
+                  <option value="B+">B+</option>
+                  <option value="B-">B-</option>
+                  <option value="AB+">AB+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="O+">O+</option>
+                  <option value="O-">O-</option>
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-6 text-gray-300 dark:text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="relative flex items-center">
+              <div className="relative mt-4">
+                <select className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                  <option value="" defaultValue=''>
+                    Select District Name
+                  </option>
+                  {district.map(item => (
+                    <option key={item.id} value={item.bn_name}>
+                      {item.bn_name}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-6 text-gray-300 dark:text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+              </div>
             </div>
 
             <div className="relative flex items-center mt-4">
@@ -152,12 +224,13 @@ function SignUp() {
               </button>
 
               <div className="mt-6 text-center ">
-                <a
-                  href="#"
-                  className="text-sm text-blue-500 hover:underline dark:text-blue-400"
+                <Link
+                  to="/signin"
+                  className="text-sm text-gray-800  dark:text-blue-400"
                 >
-                  Already have an account?
-                </a>
+                  Already have an account?{' '}
+                  <span className="hover:underline">Log In</span>
+                </Link>
               </div>
             </div>
           </form>
