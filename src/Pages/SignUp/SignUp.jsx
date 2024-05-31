@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Helmet } from 'react-helmet';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../../Firebase/AuthProvider';
+import toast from 'react-hot-toast';
 // import logo from '../../assets/images/logo.png';
 function SignUp() {
+  const { createUser, setUser, updateUserProfile } = useContext(AuthContext);
   const [district, setDistrict] = useState([]);
   const [upazila, setUpazila] = useState([]);
   const [error, setError] = useState('');
+    const navigate = useNavigate();
   useEffect(() => {
     (async() => {
       const res = await fetch('/districts.json');
@@ -50,6 +54,19 @@ function SignUp() {
       status:'active'
     }
     console.log(user);
+    form.reset();
+
+        createUser(email, password)
+          .then(result => {
+            updateUserProfile(name, photo)
+              .then(() => {
+                setUser(result.user);
+                toast.success('Successfully Created Account!');
+                navigate('/');
+              })
+              .catch(err => console.log(err));
+          })
+          .catch(error => console.log(error.message));
   }
   return (
     <>

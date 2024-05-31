@@ -1,24 +1,30 @@
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../../../assets/images/logo.png';
+import { AuthContext } from '../../../Firebase/AuthProvider';
 function NavBar() {
+  const { user,logOut } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
-
+  const navigate = useNavigate();
   const handleToggleMenu = () => {
     setOpen(!open);
   };
+ const handleLogOut = () => {
+   logOut();
+   navigate('/');
+ };
 
   return (
     <nav className="bg-white border-gray-200 py-2.5 ">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
-        <a href="#" className="flex items-center">
+        <Link to="/" className="flex items-center">
           <img src={logo} className="w-24" alt="Landwind Logo" />
           <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
             <h2 className="text-black text-3xl lg:text-4xl font-semibold lg:font-bold">
               Life<span className="text-red-500">S</span>ync
             </h2>
           </span>
-        </a>
+        </Link>
         <button
           onClick={handleToggleMenu}
           className="inline-block lg:hidden focus:outline-none"
@@ -78,11 +84,46 @@ function NavBar() {
                 Funding
               </NavLink>
             </li>
-            <Link to='/signin'>
-              <button className="bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:from-blue-500 hover:via-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-0.5 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-xl">
-                Login
-              </button>
-            </Link>
+            {user ? (
+              <>
+                <div className="dropdown dropdown-end">
+                  <div
+                    tabIndex={0}
+                    role="button"
+                    className="btn btn-ghost btn-circle avatar"
+                  >
+                    <div className="w-10 rounded-full">
+                      <img
+                        alt="Tailwind CSS Navbar component"
+                        src={
+                          user?.photoURL
+                            ? user?.photoURL
+                            : 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'
+                        }
+                      />
+                    </div>
+                  </div>
+                  <ul
+                    tabIndex={0}
+                    className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                  >
+                    <li>
+                      <a className="justify-between">Profile</a>
+                    </li>
+
+                    <li>
+                      <p onClick={handleLogOut}>Logout</p>
+                    </li>
+                  </ul>
+                </div>
+              </>
+            ) : (
+              <Link to="/signin">
+                <button className="bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:from-blue-500 hover:via-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-0.5 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-xl">
+                  Login
+                </button>
+              </Link>
+            )}
           </ul>
         </div>
       </div>

@@ -6,6 +6,7 @@ import Funding from '../Pages/Funding/Funding';
 import SignIn from '../Pages/SignIn/SignIn';
 import SignUp from '../Pages/SignUp/SignUp';
 import ErrorPage from '../Pages/Error/ErrorPage';
+import HomePage from '../Pages/Home/HomePage/HomePage';
 
 const router = createBrowserRouter([
   {
@@ -15,7 +16,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <h1>Homepage</h1>
+        element: <HomePage/>
       },
       {
         path: '/donation-request',
