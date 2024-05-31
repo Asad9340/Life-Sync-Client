@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 function SignUp() {
   const [district, setDistrict] = useState([]);
   const [upazila, setUpazila] = useState([]);
+  const [error, setError] = useState('');
   useEffect(() => {
     (async() => {
       const res = await fetch('/districts.json');
@@ -18,12 +19,42 @@ function SignUp() {
       setUpazila(data[2].data);
     })()
   }, [])
-  console.log(upazila);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const form = e.target;
+    const name = form.name.value;
+    const email = form.email.value;
+    const photo = form.photo.value;
+    const password = form.password.value;
+    const confirmPassword = form.confirmPassword.value;
+    if (password !== confirmPassword) {
+      setError('Password does not match');
+      return;
+    } else {
+      setError('');
+    }
+    const bloodGroup = form.bloodGroup.value;
+    const district = form.district.value;
+    const upazila = form.upazila.value;
+    const user = {
+      name,
+      email,
+      photo,
+      password,
+      confirmPassword,
+      bloodGroup,
+      district,
+      upazila,
+      role: 'donor',
+      status:'active'
+    }
+    console.log(user);
+  }
   return (
-    <div>
+    <div className="my-8 lg:my-12">
       <section className="bg-white">
         <div className="container flex items-center justify-center min-h-screen px-6 mx-auto">
-          <form className="w-full max-w-md">
+          <form onSubmit={handleSubmit} className="w-full max-w-md">
             {/* <div className="flex justify-center mx-auto">
               <img
                 className="w-32"
@@ -37,7 +68,7 @@ function SignUp() {
                 href="#"
                 className="w-1/3 pb-4 text-3xl md:text-4xl font-semibold lg:font-bold text-center text-gray-800 capitalize dark:border-blue-400"
               >
-                sign up
+                Registration
               </a>
             </div>
 
@@ -61,6 +92,8 @@ function SignUp() {
 
               <input
                 type="text"
+                name="name"
+                required
                 className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 placeholder="Name"
               />
@@ -87,7 +120,13 @@ function SignUp() {
 
               <h2 className="mx-3 text-gray-400">Profile Photo</h2>
 
-              <input id="dropzone-file" type="file" className="hidden" />
+              <input
+                name="photo"
+                required
+                id="dropzone-file"
+                type="file"
+                className=""
+              />
             </label>
 
             <div className="relative flex items-center mt-6">
@@ -110,13 +149,19 @@ function SignUp() {
 
               <input
                 type="email"
+                name="email"
+                required
                 className="block w-full py-3 text-gray-700 bg-white border rounded-lg px-11 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 placeholder="Email address"
               />
             </div>
             <div className="relative flex items-center">
               <div className="relative mt-4">
-                <select className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                <select
+                  name="bloodGroup"
+                  required
+                  className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                >
                   <option value="" defaultValue="">
                     Select Blood Group
                   </option>
@@ -148,7 +193,11 @@ function SignUp() {
             </div>
             <div className="relative flex items-center">
               <div className="relative mt-4">
-                <select className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                <select
+                  name="district"
+                  required
+                  className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                >
                   <option value="" defaultValue="">
                     Select District Name
                   </option>
@@ -177,7 +226,11 @@ function SignUp() {
             </div>
             <div className="relative flex items-center">
               <div className="relative mt-4">
-                <select className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                <select
+                  name="upazila"
+                  required
+                  className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                >
                   <option value="" defaultValue="">
                     Select Upazila Name
                   </option>
@@ -225,6 +278,7 @@ function SignUp() {
 
               <input
                 type="password"
+                name="password"
                 className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 placeholder="Password"
               />
@@ -250,13 +304,18 @@ function SignUp() {
 
               <input
                 type="password"
+                name="confirmPassword"
                 className="block w-full px-10 py-3 text-gray-700 bg-white border rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                 placeholder="Confirm Password"
               />
             </div>
+            <small className='text-red-500'>{error}</small>
 
             <div className="mt-6">
-              <button className="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
+              <button
+                type="submit"
+                className="w-full px-6 py-3 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-lg hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+              >
                 Sign Up
               </button>
 
