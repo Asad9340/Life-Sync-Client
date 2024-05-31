@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 // import logo from '../../assets/images/logo.png';
 function SignUp() {
   const [district, setDistrict] = useState([]);
+  const [upazila, setUpazila] = useState([]);
   useEffect(() => {
     (async() => {
       const res = await fetch('/districts.json');
@@ -10,7 +11,14 @@ function SignUp() {
       setDistrict(data[2].data);
     })()
   }, [])
-  console.log(district);
+  useEffect(() => {
+    (async() => {
+      const res = await fetch('/upazilas.json');
+      const data = await res.json();
+      setUpazila(data[2].data);
+    })()
+  }, [])
+  console.log(upazila);
   return (
     <div>
       <section className="bg-white">
@@ -109,7 +117,7 @@ function SignUp() {
             <div className="relative flex items-center">
               <div className="relative mt-4">
                 <select className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
-                  <option value="" defaultValue=''>
+                  <option value="" defaultValue="">
                     Select Blood Group
                   </option>
                   <option value="A+">A+</option>
@@ -141,10 +149,39 @@ function SignUp() {
             <div className="relative flex items-center">
               <div className="relative mt-4">
                 <select className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
-                  <option value="" defaultValue=''>
+                  <option value="" defaultValue="">
                     Select District Name
                   </option>
                   {district.map(item => (
+                    <option key={item.id} value={item.bn_name}>
+                      {item.bn_name}
+                    </option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-6 h-6 text-gray-300 dark:text-gray-500"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M9 5l7 7-7 7"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+            <div className="relative flex items-center">
+              <div className="relative mt-4">
+                <select className="block w-full px-36 py-3 text-gray-700 bg-white border border-gray-300 rounded-lg dark:bg-gray-900 dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40">
+                  <option value="" defaultValue="">
+                    Select Upazila Name
+                  </option>
+                  {upazila.map(item => (
                     <option key={item.id} value={item.bn_name}>
                       {item.bn_name}
                     </option>
