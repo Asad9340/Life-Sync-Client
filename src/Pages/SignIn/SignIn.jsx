@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import logo from '../../assets/images/logo.png'
 function SignIn() {
   return (
@@ -49,12 +50,12 @@ function SignIn() {
         <p className="mt-8 text-base font-light text-center text-gray-800">
           {' '}
           Do not have an account?{' '}
-          <a
-            href="#"
+          <Link
+            to='/signup'
             className="font-medium text-gray-700 dark:text-gray-600 hover:underline"
           >
             Create One
-          </a>
+          </Link>
         </p>
       </div>
     </div>

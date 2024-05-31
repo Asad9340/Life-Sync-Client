@@ -4,6 +4,7 @@ import DonationRequest from '../Pages/DonationRequest/DonationRequest';
 import Blog from '../Pages/Blog/Blog';
 import Funding from '../Pages/Funding/Funding';
 import SignIn from '../Pages/SignIn/SignIn';
+import SignUp from '../Pages/SignUp/SignUp';
 
 const router = createBrowserRouter([
   {
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
       {
         path: '/signin',
         element:<SignIn/>
+      },
+      {
+        path: '/signup',
+        element:<SignUp/>
       },
     ]
   },
