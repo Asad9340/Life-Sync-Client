@@ -1,8 +1,12 @@
 import { Link } from 'react-router-dom';
 import logo from '../../assets/images/logo.png'
+import { Helmet } from 'react-helmet';
 function SignIn() {
   return (
     <div className="my-10">
+      <Helmet>
+        <title>Life Sync | Sign In</title>
+      </Helmet>
       <div className="w-full max-w-sm p-6 m-auto mx-auto bg-white rounded-lg shadow-md ">
         <div className="flex justify-center mx-auto">
           <img className="w-32" src={logo} alt="" />
@@ -10,8 +14,8 @@ function SignIn() {
 
         <form className="mt-6">
           <div>
-            <label htmlFor="username" className="block text-sm text-black">
-              Username
+            <label htmlFor="Name" className="block text-sm text-black">
+              Name
             </label>
             <input
               type="text"
@@ -30,7 +34,7 @@ function SignIn() {
               type="password"
               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg  dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
             />
-            <div className='flex justify-end my-2'>
+            <div className="flex justify-end my-2">
               <a
                 href="#"
                 className="text-xs text-gray-600 dark:text-gray-600 hover:underline"
@@ -51,7 +55,7 @@ function SignIn() {
           {' '}
           Do not have an account?{' '}
           <Link
-            to='/signup'
+            to="/signup"
             className="font-medium text-gray-700 dark:text-gray-600 hover:underline"
           >
             Create One
