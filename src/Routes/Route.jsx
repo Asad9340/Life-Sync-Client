@@ -8,6 +8,7 @@ import SignUp from '../Pages/SignUp/SignUp';
 import ErrorPage from '../Pages/Error/ErrorPage';
 import HomePage from '../Pages/Home/HomePage/HomePage';
 import SearchPage from '../components/SearchPage/SearchPage';
+import DashboardLayout from '../Layout/DashboardLayout';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,13 @@ const router = createBrowserRouter([
       },
     ]
   },
+  {
+    path: '/dashboard',
+    element: <DashboardLayout />,
+    children: [
+      
+    ]
+  }
 ]);
 
 export default router;

@@ -65,7 +65,7 @@ const ContactUs = ({ contactNumber, emailAddress }) => {
             </p>
             <p className="text-gray-700 mb-2">
               <span className="font-semibold">Address:</span> Shantikunjo , Tangail 1920,
-              Country
+              Bangladesh
             </p>
           </div>
         </div>
