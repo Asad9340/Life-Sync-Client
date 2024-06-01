@@ -9,6 +9,8 @@ import ErrorPage from '../Pages/Error/ErrorPage';
 import HomePage from '../Pages/Home/HomePage/HomePage';
 import SearchPage from '../components/SearchPage/SearchPage';
 import DashboardLayout from '../Layout/DashboardLayout';
+import Profile from '../Dashboard/Profile/Profile';
+import Board from '../Dashboard/Board/Board';
 
 const router = createBrowserRouter([
   {
@@ -47,10 +49,17 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: '/dashboard',
+    path: 'dashboard',
     element: <DashboardLayout />,
     children: [
-      
+      {
+        path: 'profile',
+        element:<Profile/>
+      },
+      {
+        path: 'board',
+        element:<Board/>
+      },
     ]
   }
 ]);

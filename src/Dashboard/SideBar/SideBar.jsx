@@ -1,115 +1,60 @@
-import { useState } from 'react';
-import { GiHamburgerMenu } from 'react-icons/gi';
+import React from 'react';
+import {
+  Card,
+  Typography,
+  List,
+  ListItem,
+  ListItemPrefix,
+} from '@material-tailwind/react';
+import {
+  UserCircleIcon,
+  Cog6ToothIcon,
+  PowerIcon,
+} from '@heroicons/react/24/solid';
+import { Link } from 'react-router-dom';
+
 const SideBar = () => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
   return (
     <>
-      <div className='m-8 lg:hidden'>
-      <GiHamburgerMenu onClick={toggleSidebar} />
-      </div>
-      <div className="min-h-screen flex flex-row bg-gray-100">
-        {/* Sidebar */}
-        <div
-          className={`flex flex-col w-64 bg-white shadow-md transition-all duration-300 ease-in-out ${
-            isOpen ? 'translate-x-0' : '-translate-x-full'
-          } md:translate-x-0`}
-        >
-          {/* Logo and Toggle Button */}
-
-          <div className="flex items-center justify-between p-4">
-            <h1 className="text-3xl text-indigo-500 font-bold">Logo</h1>
-            <button
-              className="md:hidden text-gray-600 focus:outline-none focus:text-gray-800"
-              onClick={toggleSidebar}
-            >
-              <i className={`bx ${isOpen ? 'bx-x' : 'bx-menu'} text-2xl`}></i>
-            </button>
-          </div>
-          {/* Sidebar Links */}
-          <ul className="flex flex-col py-2 space-y-1">
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-4 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <i className="bx bx-home text-lg mr-2"></i>
-                Dashboard
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-4 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <i className="bx bx-music text-lg mr-2"></i>
-                Music
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-4 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <i className="bx bx-drink text-lg mr-2"></i>
-                Drink
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-4 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <i className="bx bx-shopping-bag text-lg mr-2"></i>
-                Shopping
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-4 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <i className="bx bx-chat text-lg mr-2"></i>
-                Chat
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-4 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <i className="bx bx-user text-lg mr-2"></i>
-                Profile
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-4 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <i className="bx bx-bell text-lg mr-2"></i>
-                Notifications
-                <span className="ml-auto text-sm bg-red-100 text-red-500 rounded-full px-2 py-1">
-                  5
-                </span>
-              </a>
-            </li>
-            <li>
-              <a
-                href="#"
-                className="flex items-center p-4 text-gray-600 hover:bg-gray-200 hover:text-gray-800"
-              >
-                <i className="bx bx-log-out text-lg mr-2"></i>
-                Logout
-              </a>
-            </li>
-          </ul>
+      <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
+        <div className="mb-2 p-4">
+          <Link to="/">
+            <Typography variant="h5" color="blue-gray">
+              Home
+            </Typography>
+          </Link>
         </div>
-      </div>
+        <List>
+          <Link to='board'>
+            <ListItem>
+              <ListItemPrefix>
+                <UserCircleIcon className="h-5 w-5" />
+              </ListItemPrefix>
+              Dashboard
+            </ListItem>
+          </Link>
+          <Link to="profile">
+            <ListItem>
+              <ListItemPrefix>
+                <UserCircleIcon className="h-5 w-5" />
+              </ListItemPrefix>
+              Profile
+            </ListItem>
+          </Link>
+          <ListItem>
+            <ListItemPrefix>
+              <Cog6ToothIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Settings
+          </ListItem>
+          <ListItem>
+            <ListItemPrefix>
+              <PowerIcon className="h-5 w-5" />
+            </ListItemPrefix>
+            Log Out
+          </ListItem>
+        </List>
+      </Card>
     </>
   );
 };
