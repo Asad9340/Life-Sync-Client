@@ -1,7 +1,32 @@
-import { Link } from 'react-router-dom';
-import logo from '../../assets/images/logo.png'
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import logo from '../../assets/images/logo.png';
 import { Helmet } from 'react-helmet';
+import { useContext, useState } from 'react';
+import { AuthContext } from '../../Firebase/AuthProvider';
+import toast from 'react-hot-toast';
 function SignIn() {
+  const { loginUser, setUser } = useContext(AuthContext);
+  const [error, setError] = useState('');
+  const location = useLocation();
+  const navigate = useNavigate();
+  const from = location?.state || '/';
+  const handleLogin = e => {
+    e.preventDefault();
+    const form = e.target;
+    const email = form.email.value;
+    const password = form.password.value;
+    console.log(email, password);
+    loginUser(email, password)
+      .then(result => {
+        setUser(result.user);
+        toast.success('Login Successfully!');
+        navigate(from);
+      })
+      .catch(() => {
+        setError('Wrong Email or Password');
+        toast.error('Wrong Email or Password');
+      });
+  };
   return (
     <div className="my-10">
       <Helmet>
@@ -12,13 +37,14 @@ function SignIn() {
           <img className="w-32" src={logo} alt="" />
         </div>
 
-        <form className="mt-6">
+        <form onSubmit={handleLogin} className="mt-6">
           <div>
-            <label htmlFor="Name" className="block text-sm text-black">
-              Name
+            <label htmlFor="Email" className="block text-sm text-black">
+              Email
             </label>
             <input
-              type="text"
+              type="email"
+              name="email"
               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg  dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
             />
           </div>
@@ -32,6 +58,7 @@ function SignIn() {
 
             <input
               type="password"
+              name="password"
               className="block w-full px-4 py-2 mt-2 text-gray-700 bg-white border rounded-lg  dark:text-gray-300 dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
             />
             <div className="flex justify-end my-2">
@@ -43,9 +70,15 @@ function SignIn() {
               </a>
             </div>
           </div>
+          <small className="text-red-700 -mb-3 animate__animated animate__shakeX">
+            {error}
+          </small>
 
           <div className="mt-6">
-            <button className="w-full px-6 py-2.5 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50">
+            <button
+              type="submit"
+              className="w-full px-6 py-2.5 text-sm font-medium tracking-wide text-white capitalize transition-colors duration-300 transform bg-gray-800 rounded-lg hover:bg-gray-700 focus:outline-none focus:ring focus:ring-gray-300 focus:ring-opacity-50"
+            >
               Sign In
             </button>
           </div>
