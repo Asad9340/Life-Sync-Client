@@ -3,33 +3,35 @@ import { Helmet } from 'react-helmet';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../Firebase/AuthProvider';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 // import logo from '../../assets/images/logo.png';
+
 function SignUp() {
   const { createUser, setUser, updateUserProfile } = useContext(AuthContext);
   const [district, setDistrict] = useState([]);
   const [upazila, setUpazila] = useState([]);
   const [error, setError] = useState('');
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   useEffect(() => {
-    (async() => {
+    (async () => {
       const res = await fetch('/districts.json');
       const data = await res.json();
       setDistrict(data[2].data);
-    })()
-  }, [])
+    })();
+  }, []);
   useEffect(() => {
-    (async() => {
+    (async () => {
       const res = await fetch('/upazilas.json');
       const data = await res.json();
       setUpazila(data[2].data);
-    })()
-  }, [])
-  const handleSubmit = (e) => {
+    })();
+  }, []);
+  const handleSubmit = async e => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value;
     const email = form.email.value;
-    const photo = form.photo.value;
+    const photo = form.photo.files[0];
     const password = form.password.value;
     const confirmPassword = form.confirmPassword.value;
     if (password !== confirmPassword) {
@@ -41,33 +43,52 @@ function SignUp() {
     const bloodGroup = form.bloodGroup.value;
     const district = form.district.value;
     const upazila = form.upazila.value;
+    const formData = new FormData();
+    formData.append('image', photo);
+    try {
+      const { data } = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_IMAGE_HOSTING_KEY
+        }`,
+        formData
+      );
+      if (!data.success) {
+        return
+      } else {
+       var photoURL = data?.data.display_url;
+        console.log(photoURL);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+
     const user = {
       name,
       email,
-      photo,
+      photoURL,
       password,
       confirmPassword,
       bloodGroup,
       district,
       upazila,
       role: 'donor',
-      status:'active'
-    }
+      status: 'active',
+    };
     console.log(user);
     form.reset();
 
-        createUser(email, password)
-          .then(result => {
-            updateUserProfile(name, photo)
-              .then(() => {
-                setUser(result.user);
-                toast.success('Successfully Created Account!');
-                navigate('/');
-              })
-              .catch(err => console.log(err));
+    createUser(email, password)
+      .then(result => {
+        updateUserProfile(name,photoURL)
+          .then(() => {
+            setUser(result.user);
+            toast.success('Successfully Created Account!');
+            navigate('/');
           })
-          .catch(error => console.log(error.message));
-  }
+          .catch(err => console.log(err));
+      })
+      .catch(error => console.log(error.message));
+  };
   return (
     <>
       <Helmet>
