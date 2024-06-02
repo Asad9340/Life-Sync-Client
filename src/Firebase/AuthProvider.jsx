@@ -1,10 +1,7 @@
 import {
-  GithubAuthProvider,
-  GoogleAuthProvider,
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
-  signInWithPopup,
   signOut,
   updateProfile,
 } from 'firebase/auth';
@@ -14,8 +11,6 @@ import auth from './firebase.config';
 import axios from 'axios';
 
 export const AuthContext = createContext();
-const googleProvider = new GoogleAuthProvider();
-const githubProvider = new GithubAuthProvider();
 function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,18 +24,7 @@ function AuthProvider({ children }) {
   const loginUser = (email, password) => {
     return signInWithEmailAndPassword(auth, email, password);
   };
-  //sign in with google
-  const googleLogin = () => {
-    setLoading(true);
-    setUser(null);
-    return signInWithPopup(auth, googleProvider);
-  };
-  //sign in with github
-  const githubLogin = () => {
-    setLoading(true);
-    setUser(null);
-    return signInWithPopup(auth, githubProvider);
-  };
+
 
   //update user profile
   const updateUserProfile = (name, profile) => {
@@ -83,8 +67,6 @@ function AuthProvider({ children }) {
   }, []);
 
   const userInfo = {
-    googleLogin,
-    githubLogin,
     setUser,
     user,
     createUser,
