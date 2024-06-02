@@ -11,57 +11,62 @@ import SearchPage from '../components/SearchPage/SearchPage';
 import DashboardLayout from '../Layout/DashboardLayout';
 import Profile from '../Dashboard/Profile/Profile';
 import Board from '../Dashboard/Board/Board';
+import PrivateRoute from './PrivateRoute';
 
 const router = createBrowserRouter([
   {
     path: '/',
-    element:<Root/>,
-    errorElement: <ErrorPage/>,
+    element: <Root />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: '/',
-        element: <HomePage/>
+        element: <HomePage />,
       },
       {
         path: '/donation-request',
-        element:<DonationRequest/>
+        element: <DonationRequest />,
       },
       {
         path: '/blog',
-        element:<Blog/>
+        element: <Blog />,
       },
       {
         path: '/funding',
-        element:<Funding/>
+        element: <Funding />,
       },
       {
         path: '/signin',
-        element:<SignIn/>
+        element: <SignIn />,
       },
       {
         path: '/signup',
-        element:<SignUp/>
+        element: <SignUp />,
       },
       {
         path: '/search',
-        element:<SearchPage/>
+        element: <SearchPage />,
       },
-    ]
+    ],
   },
   {
     path: 'dashboard',
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         path: 'profile',
-        element:<Profile/>
+        element: <Profile />,
       },
       {
         path: 'board',
-        element:<Board/>
+        element: <Board />,
       },
-    ]
-  }
+    ],
+  },
 ]);
 
 export default router;

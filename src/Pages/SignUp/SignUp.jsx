@@ -53,9 +53,9 @@ function SignUp() {
         formData
       );
       if (!data.success) {
-        return
+        return;
       } else {
-       var photoURL = data?.data.display_url;
+        var photoURL = data?.data.display_url;
         console.log(photoURL);
       }
     } catch (error) {
@@ -75,20 +75,23 @@ function SignUp() {
       status: 'active',
     };
     console.log(user);
-    form.reset();
-
-    createUser(email, password)
-      .then(result => {
-        updateUserProfile(name,photoURL)
-          .then(() => {
-            setUser(result.user);
-            toast.success('Successfully Created Account!');
-            navigate('/');
-          })
-          .catch(err => console.log(err));
-      })
-      .catch(error => console.log(error.message));
+    const { data } = await axios.post(`http://localhost:5000/users`, user);
+    console.log(data);
+    if (data.insertedId) {
+      createUser(email, password)
+        .then(result => {
+          updateUserProfile(name, photoURL)
+            .then(() => {
+              setUser(result.user);
+              toast.success('Successfully Created Account!');
+              navigate('/');
+            })
+            .catch(err => console.log(err));
+        })
+        .catch(error => console.log(error.message));
+    }
   };
+
   return (
     <>
       <Helmet>
@@ -98,14 +101,6 @@ function SignUp() {
         <section className="bg-white">
           <div className="container flex items-center justify-center min-h-screen px-6 mx-auto">
             <form onSubmit={handleSubmit} className="w-full max-w-md">
-              {/* <div className="flex justify-center mx-auto">
-              <img
-                className="w-32"
-                src={logo}
-                alt=""
-              />
-            </div> */}
-
               <div className="flex items-center justify-center mt-6">
                 <a
                   href="#"
