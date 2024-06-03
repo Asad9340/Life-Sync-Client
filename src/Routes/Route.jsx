@@ -12,6 +12,9 @@ import DashboardLayout from '../Layout/DashboardLayout';
 import Profile from '../Dashboard/Profile/Profile';
 import Board from '../Dashboard/Board/Board';
 import PrivateRoute from './PrivateRoute';
+import AllUsers from '../Dashboard/AllUsers/AllUsers';
+import MyDonationReq from '../Dashboard/MyDonationReq/MyDonationReq';
+import CreateDonationReq from '../Dashboard/CreateDonationReq/CreateDonationReq';
 
 const router = createBrowserRouter([
   {
@@ -50,7 +53,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: 'dashboard',
+    path: '/dashboard',
     element: (
       <PrivateRoute>
         <DashboardLayout />
@@ -58,12 +61,24 @@ const router = createBrowserRouter([
     ),
     children: [
       {
+        path: '/dashboard',
+        element: <Board />,
+      },
+      {
         path: 'profile',
         element: <Profile />,
       },
       {
-        path: 'board',
-        element: <Board />,
+        path: 'all-users',
+        element: <AllUsers />,
+      },
+      {
+        path: 'my-donation-request',
+        element: <MyDonationReq />,
+      },
+      {
+        path: 'create-donation-request',
+        element: <CreateDonationReq/>
       },
     ],
   },

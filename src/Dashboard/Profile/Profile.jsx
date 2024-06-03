@@ -1,195 +1,106 @@
-import  { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import axios from 'axios';
+import { AuthContext } from '../../Firebase/AuthProvider';
 
-const Profile = () => {
-  // Sample user data fetched from API
-  const userData = {
-    name: 'John Doe',
-    email: 'johndoe@example.com',
-    avatarUrl: 'https://example.com/avatar.jpg',
-    district: 'Sample District',
-    upazila: 'Sample Upazila',
-    bloodGroup: 'A+',
-    role: 'Donor',
-    status: 'Active',
-  };
+function Profile() {
+  const { user } = useContext(AuthContext);
+  const [userData, setUserData] = useState({});
+  const [editable, setEditable] = useState(false);
 
-  const districts = ['District 1', 'District 2', 'District 3']; // Sample districts
-  const upazilas = ['Upazila 1', 'Upazila 2', 'Upazila 3']; // Sample upazilas
-  const bloodGroups = ['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-']; // Blood groups
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const { data } = await axios.get(`http://localhost:5000/users/${user?.email}`);
+        if (data && data.length > 0) {
+          setUserData(data[0]);
+        }
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    };
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [editedData, setEditedData] = useState({ ...userData });
+    if (user?.email) {
+      fetchUserData();
+    }
+  }, [user?.email]);
 
-  const handleEditClick = () => {
-    setIsEditing(!isEditing);
-  };
-
-  const handleSaveClick = () => {
-    // Save updated data to the database
-    // Logic to save data goes here
-    setIsEditing(false);
-  };
-
-  const handleChange = e => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
-    setEditedData({ ...editedData, [name]: value });
+    setUserData(prevData => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      // Make API call to update user data
+      console.log('Updated user data:', userData);
+      setEditable(false); // Disable editing after saving
+    } catch (error) {
+      console.error('Error updating user data:', error);
+    }
   };
 
   return (
-    <div className="max-w-xl mx-auto">
-      <h1 className="text-2xl font-semibold mb-4">Profile</h1>
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-semibold">User Information</h2>
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600"
-          onClick={handleEditClick}
-        >
-          {isEditing ? 'Cancel' : 'Edit'}
-        </button>
+    <div className="justify-center items-center mt-10">
+      <div className="flex  justify-end mb-4 w-full">
+        {!editable ? (
+          <button onClick={() => setEditable(true)} className="border py-2 px-4 rounded-md font-semibold bg-blue-600 text-white">Edit</button>
+        ) : (
+          <button onClick={handleSubmit} className="border py-2 px-4 rounded-md font-semibold bg-green-600 text-white">Save</button>
+        )}
       </div>
-      <form>
-        <div className="grid grid-cols-2 gap-4">
-          <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-gray-600 font-semibold mb-1"
-            >
-              Name
-            </label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              className="w-full px-4 py-2 border rounded bg-gray-100"
-              value={editedData.name}
-              readOnly={!isEditing}
-              onChange={handleChange}
-            />
+      <form className="max-w-5xl mx-auto bg-[#F4F3F0] px-4 md:px-8 py-4 " onSubmit={handleSubmit}>
+        <h6 className="text-blueGray-400 text-3xl mt-3 mb-6 font-bold text-center">User Profile</h6>
+        <div className="flex flex-wrap">
+          <div className="w-full px-4">
+            <div className="relative w-full mb-3 flex justify-center">
+              <img className="w-36" src={userData?.photoURL} alt="" />
+            </div>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="email"
-              className="block text-gray-600 font-semibold mb-1"
-            >
-              Email
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              className="w-full px-4 py-2 border rounded bg-gray-100"
-              value={editedData.email}
-              readOnly
-            />
+          <div className="w-full lg:w-6/12 px-4">
+            <div className="relative w-full mb-3">
+              <label className="block text-blueGray-600 text-xs font-bold mb-2" htmlFor="name">Name</label>
+              <input type="text" name="name" id="name" placeholder="Name" value={userData.name || ''} onChange={handleChange} readOnly={!editable} className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
+            </div>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="district"
-              className="block text-gray-600 font-semibold mb-1"
-            >
-              District
-            </label>
-            <select
-              id="district"
-              name="district"
-              className="w-full px-4 py-2 border rounded bg-gray-100"
-              value={editedData.district}
-              readOnly={!isEditing}
-              onChange={handleChange}
-            >
-              {districts.map((district, index) => (
-                <option key={index} value={district}>
-                  {district}
-                </option>
-              ))}
-            </select>
+          <div className="w-full lg:w-6/12 px-4">
+            <div className="relative w-full mb-3">
+              <label className="block text-blueGray-600 text-xs font-bold mb-2" htmlFor="email">Email</label>
+              <input type="email" name="email" id="email" placeholder="Email" value={userData.email || ''} readOnly className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
+            </div>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="upazila"
-              className="block text-gray-600 font-semibold mb-1"
-            >
-              Upazila
-            </label>
-            <select
-              id="upazila"
-              name="upazila"
-              className="w-full px-4 py-2 border rounded bg-gray-100"
-              value={editedData.upazila}
-              readOnly={!isEditing}
-              onChange={handleChange}
-            >
-              {upazilas.map((upazila, index) => (
-                <option key={index} value={upazila}>
-                  {upazila}
-                </option>
-              ))}
-            </select>
+          <div className="w-full lg:w-6/12 px-4">
+            <div className="relative w-full mb-3">
+              <label className="block text-blueGray-600 text-xs font-bold mb-2" htmlFor="district">District</label>
+              <input type="text" name="district" id="district" placeholder="District Name" value={userData.district || ''} onChange={handleChange} readOnly={!editable} className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
+            </div>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="bloodGroup"
-              className="block text-gray-600 font-semibold mb-1"
-            >
-              Blood Group
-            </label>
-            <select
-              id="bloodGroup"
-              name="bloodGroup"
-              className="w-full px-4 py-2 border rounded bg-gray-100"
-              value={editedData.bloodGroup}
-              readOnly={!isEditing}
-              onChange={handleChange}
-            >
-              {bloodGroups.map((group, index) => (
-                <option key={index} value={group}>
-                  {group}
-                </option>
-              ))}
-            </select>
+          <div className="w-full lg:w-6/12 px-4">
+            <div className="relative w-full mb-3">
+              <label className="block text-blueGray-600 text-xs font-bold mb-2" htmlFor="upazila">Upazila</label>
+              <input type="text" name="upazila" id="upazila" placeholder="Upazila" value={userData.upazila || ''} onChange={handleChange} readOnly={!editable} className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
+            </div>
           </div>
-          <div className="mb-4">
-            <label
-              htmlFor="role"
-              className="block text-gray-600 font-semibold mb-1"
-            >
-              Role
-            </label>
-            <input
-              type="text"
-              id="role"
-              className="w-full px-4 py-2 border rounded bg-gray-100"
-              value={editedData.role}
-              readOnly
-            />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="status"
-              className="block text-gray-600 font-semibold mb-1"
-            >
-              Status
-            </label>
-            <input
-              type="text"
-              id="status"
-              className="w-full px-4 py-2 border rounded bg-gray-100"
-              value={editedData.status}
-              readOnly
-            />
+          <div className="w-full lg:w-6/12 px-4">
+            <div className="relative w-full mb-3">
+              <label className="block text-blueGray-600 text-xs font-bold mb-2" htmlFor="bloodGroup">Blood Group</label>
+              <input type="text" name="bloodGroup" id="bloodGroup" placeholder="Blood Group" value={userData.bloodGroup || ''} onChange={handleChange} readOnly={!editable} className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
+            </div>
           </div>
         </div>
-        {isEditing && (
-          <button
-            className="mt-4 px-6 py-2 bg-green-500 text-white rounded hover:bg-green-600 focus:outline-none focus:bg-green-600"
-            onClick={handleSaveClick}
-          >
-            Save
-          </button>
+        {editable && (
+          <div className="w-full px-4">
+            <div className="relative w-full mb-3">
+              <input className="border w-full py-2 rounded-md font-semibold bg-green-700 active:bg-green-900 text-white" type="submit" value="Update Profile" />
+            </div>
+          </div>
         )}
       </form>
     </div>
   );
-};
+}
 
 export default Profile;
