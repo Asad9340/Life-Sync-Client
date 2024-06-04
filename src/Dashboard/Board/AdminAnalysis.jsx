@@ -1,8 +1,31 @@
 import { BiSolidDonateBlood } from 'react-icons/bi';
 import { RiRefund2Line } from 'react-icons/ri';
 import { MdBloodtype } from 'react-icons/md';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../Firebase/AuthProvider';
+import axios from 'axios';
 
 const AdminAnalysis = () => {
+  const [userData, setUserData] = useState([]);
+  const [myDonationReq, setMyDonationReq] = useState([]);
+  const { user } = useContext(AuthContext);
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(`http://localhost:5000/users`);
+      console.log(data[0]?.role);
+      const filterUser = data.filter(item => item.role === 'donor');
+      setUserData(filterUser);
+    })();
+  }, [user?.email]);
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(
+        'http://localhost:5000/donation-requests'
+      );
+      setMyDonationReq(data);
+    })();
+  }, []);
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-semibold mb-4">
@@ -14,7 +37,7 @@ const AdminAnalysis = () => {
             <BiSolidDonateBlood className="text-8xl text-blue-500" />
           </div>
           <h2 className="text-xl font-semibold text-center">Total Donors</h2>
-          <p className="text-center text-blue-700">$1,500,000</p>
+          <p className="text-center text-blue-700">{userData?.length}</p>
         </div>
         <div className="bg-green-100 shadow-md p-6 rounded-lg">
           <div className="flex justify-center">
@@ -27,8 +50,10 @@ const AdminAnalysis = () => {
           <div className="flex justify-center">
             <MdBloodtype className="text-8xl text-yellow-500" />
           </div>
-          <h2 className="text-xl font-semibold text-center">Total Blood Donation Request</h2>
-          <p className="text-center text-yellow-700">10,000</p>
+          <h2 className="text-xl font-semibold text-center">
+            Total Blood Donation Request
+          </h2>
+          <p className="text-center text-yellow-700">{myDonationReq?.length}</p>
         </div>
       </div>
     </div>
