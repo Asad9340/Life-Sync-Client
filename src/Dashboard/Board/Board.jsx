@@ -87,7 +87,7 @@ function Board() {
           </div>
         </>
       )}
-      {userData?.role === 'admin' && <AdminAnalysis/>}
+      {userData?.role === 'admin' && <AdminAnalysis />}
     </div>
   );
 }
