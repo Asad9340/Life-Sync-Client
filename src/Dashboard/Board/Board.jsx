@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../Firebase/AuthProvider';
 import axios from 'axios';
+import AdminAnalysis from './AdminAnalysis';
 
 function Board() {
   const [userData, setUserData] = useState([]);
@@ -15,9 +16,8 @@ function Board() {
     })();
   }, [user?.email]);
   return (
-    <div className="text-3xl font-bold text-red-500 m-6 md:m-10 text-center">
-      {userData.role === 'donor' &&
-        `Hello ${userData?.name}. Welcome to LifeSync `}
+    <div className="text-3xl font-bold m-6 md:m-10 text-center">
+      Hello {userData?.name}. Welcome to LifeSync
       {userData?.role === 'donor' && (
         <>
           <div className="overflow-x-auto">
@@ -44,8 +44,12 @@ function Board() {
                   <td>01/02/2024</td>
                   <td>11:04PM</td>
                   <td>Pending</td>
-                  <td><button className='btn btn-ghost btn-sm'>Edit</button></td>
-                  <td><button className='btn btn-error btn-sm'>Delete</button></td>
+                  <td>
+                    <button className="btn btn-ghost btn-sm">Edit</button>
+                  </td>
+                  <td>
+                    <button className="btn btn-error btn-sm">Delete</button>
+                  </td>
                   <th>1</th>
                 </tr>
                 <tr>
@@ -55,8 +59,12 @@ function Board() {
                   <td>01/02/2024</td>
                   <td>11:04PM</td>
                   <td>Pending</td>
-                  <td><button className='btn btn-ghost btn-sm'>Edit</button></td>
-                  <td><button className='btn btn-error btn-sm'>Delete</button></td>
+                  <td>
+                    <button className="btn btn-ghost btn-sm">Edit</button>
+                  </td>
+                  <td>
+                    <button className="btn btn-error btn-sm">Delete</button>
+                  </td>
                   <th>1</th>
                 </tr>
                 <tr>
@@ -66,8 +74,12 @@ function Board() {
                   <td>01/02/2024</td>
                   <td>11:04PM</td>
                   <td>Pending</td>
-                  <td><button className='btn btn-ghost btn-sm'>Edit</button></td>
-                  <td><button className='btn btn-error btn-sm'>Delete</button></td>
+                  <td>
+                    <button className="btn btn-ghost btn-sm">Edit</button>
+                  </td>
+                  <td>
+                    <button className="btn btn-error btn-sm">Delete</button>
+                  </td>
                   <th>1</th>
                 </tr>
               </tbody>
@@ -75,6 +87,7 @@ function Board() {
           </div>
         </>
       )}
+      {userData?.role === 'admin' && <AdminAnalysis/>}
     </div>
   );
 }
