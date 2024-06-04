@@ -26,6 +26,17 @@ function SignUp() {
       setUpazila(data[2].data);
     })();
   }, []);
+
+  const handleSelectDistrict = (e) => {
+    console.log('district selected', e.target.value);
+    const districtName = e.target.value;
+    const districtId = district.findIndex(
+      item => item.bn_name === districtName
+    );
+    const filteredUpazila = upazila.filter(item => item.district_id == Number(districtId) + 1);
+    console.log(filteredUpazila);
+    setUpazila(filteredUpazila);
+  };
   const handleSubmit = async e => {
     e.preventDefault();
     const form = e.target;
@@ -234,7 +245,8 @@ function SignUp() {
                   <select
                     name="district"
                     required
-                    className="block w-full px-36 py-3   text-gray-950  bg-white border border-gray-300 rounded-lg      dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
+                    onBlur={handleSelectDistrict}
+                    className="block w-full px-36 py-3   text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
                   >
                     <option value="" defaultValue="">
                       Select District Name
