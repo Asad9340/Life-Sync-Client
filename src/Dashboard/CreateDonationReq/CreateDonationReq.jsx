@@ -1,37 +1,36 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useContext } from 'react';
+import { AuthContext } from '../../Firebase/AuthProvider';
 
 function CreateDonationReq() {
-  const [formData, setFormData] = useState({
-    recipientName: '',
-    recipientDistrict: '',
-    recipientUpazila: '',
-    hospitalName: '',
-    fullAddress: '',
-    donationDate: '',
-    donationTime: '',
-    requestMessage: '',
-  });
-
-  const handleChange = e => {
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const { user } = useContext(AuthContext);
 
   const handleSubmit = async e => {
     e.preventDefault();
-    const donationRequestData = {
-      ...formData,
-      donationStatus: 'pending',
+    const form = e.target;
+    const recipientName = form.recipientName.value;
+    const recipientDistrict = form.recipientDistrict.value;
+    const recipientUpazila = form.recipientUpazila.value;
+    const hospitalName = form.hospitalName.value;
+    const address = form.address.value;
+    const donationDate = form.donationDate.value;
+    const donationTime = form.donationTime.value;
+    const description = form.textarea.value;
+    const donationRequest = {
+      recipientName,
+      recipientDistrict,
+      recipientUpazila,
+      hospitalName,
+      address,
+      donationDate,
+      donationTime,
+      description,
     };
     try {
-      await axios.post(
-        'http://localhost:5000/donation-requests',
-        donationRequestData
-      );
+      console.log(donationRequest);
+      // await axios.post(
+      //   'http://localhost:5000/donation-requests',
+      //   donationRequestData
+      // );
       // Handle success, e.g., show a success message or redirect
     } catch (error) {
       console.error('Error creating donation request:', error);
@@ -53,14 +52,43 @@ function CreateDonationReq() {
             className="block text-blueGray-600 text-xs font-bold mb-2"
             htmlFor="name"
           >
-            Name
+            Requester Name
           </label>
           <input
             type="text"
-            name="name"
+            disabled
+            placeholder="Name"
+            defaultValue={user?.displayName}
+            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+          />
+        </div>
+        <div className="relative w-full mb-3">
+          <label
+            className="block text-blueGray-600 text-xs font-bold mb-2"
+            htmlFor="name"
+          >
+            Requester Email
+          </label>
+          <input
+            type="text"
+            disabled
+            placeholder="Name"
+            defaultValue={user?.email}
+            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+          />
+        </div>
+        <div className="relative w-full mb-3">
+          <label
+            className="block text-blueGray-600 text-xs font-bold mb-2"
+            htmlFor="recipientName"
+          >
+            Recipient Name
+          </label>
+          <input
+            type="text"
+            name="recipientName"
             id="name"
             placeholder="Name"
-            onChange={handleChange}
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
           />
         </div>
@@ -160,6 +188,7 @@ function CreateDonationReq() {
           </label>
           <textarea
             placeholder="Description"
+            name="textarea"
             className="textarea textarea-bordered textarea-sm w-full max-w-5xl"
           ></textarea>
         </div>
