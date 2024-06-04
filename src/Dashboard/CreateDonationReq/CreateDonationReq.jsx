@@ -1,9 +1,11 @@
 import { useContext } from 'react';
 import { AuthContext } from '../../Firebase/AuthProvider';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function CreateDonationReq() {
   const { user } = useContext(AuthContext);
-
+  const navigate = useNavigate();
   const handleSubmit = async e => {
     e.preventDefault();
     const form = e.target;
@@ -24,13 +26,15 @@ function CreateDonationReq() {
       donationDate,
       donationTime,
       description,
+      status:'pending'
     };
     try {
       console.log(donationRequest);
-      // await axios.post(
-      //   'http://localhost:5000/donation-requests',
-      //   donationRequestData
-      // );
+      await axios.post(
+        'http://localhost:5000/donation-requests',
+        donationRequest
+      );
+navigate('/dashboard/my-donation-request');
       // Handle success, e.g., show a success message or redirect
     } catch (error) {
       console.error('Error creating donation request:', error);
@@ -39,7 +43,7 @@ function CreateDonationReq() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto border border-red-500 w-full">
+    <div className="max-w-5xl mx-auto  w-full">
       <h2 className="text-3xl font-bold mb-4">
         Donation Request Form Donation Request Form Donation Request Form
       </h2>

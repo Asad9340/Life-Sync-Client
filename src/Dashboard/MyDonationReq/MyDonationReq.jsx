@@ -1,5 +1,22 @@
+import axios from 'axios';
+import { useEffect, useState } from 'react';
 
 function MyDonationReq() {
+  const [myDonationReq, setMyDonationReq] = useState([]);
+  const [control,setControl]=useState(false);
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(
+        'http://localhost:5000/donation-requests'
+      );
+      setMyDonationReq(data);
+    })();
+  }, [control]);
+  const handleDelete = async (_id) => {
+    console.log(_id);
+    await axios.delete(`http://localhost:5000/donation-requests/${_id}`);
+    setControl(!control);
+  };
   return (
     <div className="my-10 lg:my-20 mx-4 lg:mx-10">
       <div className="overflow-x-auto">
@@ -19,51 +36,28 @@ function MyDonationReq() {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <th>1</th>
-              <td>Emran</td>
-              <td>Dhaka</td>
-              <td>01/02/2024</td>
-              <td>11:04PM</td>
-              <td>Pending</td>
-              <td>
-                <button className="btn btn-ghost btn-sm">Edit</button>
-              </td>
-              <td>
-                <button className="btn btn-error btn-sm">Delete</button>
-              </td>
-              <th>1</th>
-            </tr>
-            <tr>
-              <th>1</th>
-              <td>Emran</td>
-              <td>Dhaka</td>
-              <td>01/02/2024</td>
-              <td>11:04PM</td>
-              <td>Pending</td>
-              <td>
-                <button className="btn btn-ghost btn-sm">Edit</button>
-              </td>
-              <td>
-                <button className="btn btn-error btn-sm">Delete</button>
-              </td>
-              <th>1</th>
-            </tr>
-            <tr>
-              <th>1</th>
-              <td>Emran</td>
-              <td>Dhaka</td>
-              <td>01/02/2024</td>
-              <td>11:04PM</td>
-              <td>Pending</td>
-              <td>
-                <button className="btn btn-ghost btn-sm">Edit</button>
-              </td>
-              <td>
-                <button className="btn btn-error btn-sm">Delete</button>
-              </td>
-              <th>1</th>
-            </tr>
+            {myDonationReq.map((item,index) => (
+              <tr key={item._id}>
+                <th>{index + 1}</th>
+                <td>{item?.recipientName}</td>
+                <td>{item?.address}</td>
+                <td>{item?.donationDate}</td>
+                <td>{item?.donationTime}</td>
+                <td>{item?.status}</td>
+                <td>
+                  <button className="btn btn-ghost btn-sm">Edit</button>
+                </td>
+                <td>
+                  <button
+                    onClick={() => handleDelete(item?._id)}
+                    className="btn btn-error btn-sm"
+                  >
+                    Delete
+                  </button>
+                </td>
+                <th>1</th>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -71,4 +65,4 @@ function MyDonationReq() {
   );
 }
 
-export default MyDonationReq
+export default MyDonationReq;
