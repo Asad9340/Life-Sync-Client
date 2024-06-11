@@ -3,11 +3,11 @@ import SideBar from "../Dashboard/SideBar/SideBar"
 
 function DashboardLayout() {
   return (
-    <div className="flex">
+    <div className="flex gap-6">
       <div>
         <SideBar />
       </div>
-      <div>
+      <div className="w-full">
         <Outlet />
       </div>
     </div>

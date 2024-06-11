@@ -94,12 +94,24 @@ const SideBar = () => {
           )}
           {userData?.role === 'admin' && (
             <>
-              <Link to="all-users">
+              <Link to="all-blood-donation-request">
                 <ListItem>
                   <ListItemPrefix>
                     <UserCircleIcon className="h-5 w-5" />
                   </ListItemPrefix>
                   All Blood Donation Request
+                </ListItem>
+              </Link>
+            </>
+          )}
+          {userData?.role === 'admin' && (
+            <>
+              <Link to="content-management">
+                <ListItem>
+                  <ListItemPrefix>
+                    <UserCircleIcon className="h-5 w-5" />
+                  </ListItemPrefix>
+                  Content Management
                 </ListItem>
               </Link>
             </>

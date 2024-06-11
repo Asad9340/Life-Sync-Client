@@ -15,6 +15,9 @@ import PrivateRoute from './PrivateRoute';
 import AllUsers from '../Dashboard/AllUsers/AllUsers';
 import MyDonationReq from '../Dashboard/MyDonationReq/MyDonationReq';
 import CreateDonationReq from '../Dashboard/CreateDonationReq/CreateDonationReq';
+import AllBloodDonationReq from '../Dashboard/AllBloodDonationReq/AllBloodDonationReq';
+import ContentManagement from '../Dashboard/ContentManagement/ContentManagement';
+import AddBlogPage from '../Dashboard/AddBlogPage/AddBlogPage';
 
 const router = createBrowserRouter([
   {
@@ -73,12 +76,24 @@ const router = createBrowserRouter([
         element: <AllUsers />,
       },
       {
+        path: 'all-blood-donation-request',
+        element: <AllBloodDonationReq />,
+      },
+      {
+        path: 'content-management',
+        element: <ContentManagement />,
+      },
+      {
+        path: 'content-management/add-blog',
+        element:<AddBlogPage/>
+      },
+      {
         path: 'my-donation-request',
         element: <MyDonationReq />,
       },
       {
         path: 'create-donation-request',
-        element: <CreateDonationReq/>
+        element: <CreateDonationReq />,
       },
     ],
   },

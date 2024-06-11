@@ -17,6 +17,7 @@ function CreateDonationReq() {
     const donationDate = form.donationDate.value;
     const donationTime = form.donationTime.value;
     const description = form.textarea.value;
+    const email = user?.email;
     const donationRequest = {
       recipientName,
       recipientDistrict,
@@ -26,7 +27,8 @@ function CreateDonationReq() {
       donationDate,
       donationTime,
       description,
-      status:'pending'
+      status: 'pending',
+      email,
     };
     try {
       console.log(donationRequest);

@@ -1,21 +1,18 @@
 import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../Firebase/AuthProvider';
+import { useEffect, useState } from 'react';
 
-function MyDonationReq() {
+function AllBloodDonationReq() {
   const [myDonationReq, setMyDonationReq] = useState([]);
   const [control, setControl] = useState(false);
-  const { user } = useContext(AuthContext);
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/donation-requests/${user?.email}`
+        'http://localhost:5000/donation-requests'
       );
       setMyDonationReq(data);
     })();
-  }, [control, user?.email]);
-  console.log('i am from hihihi',myDonationReq);
-  const handleDelete = async (_id) => {
+  }, [control]);
+  const handleDelete = async _id => {
     console.log(_id);
     await axios.delete(`http://localhost:5000/donation-requests/${_id}`);
     setControl(!control);
@@ -39,7 +36,7 @@ function MyDonationReq() {
             </tr>
           </thead>
           <tbody>
-            {myDonationReq.map((item,index) => (
+            {myDonationReq.map((item, index) => (
               <tr key={item._id}>
                 <th>{index + 1}</th>
                 <td>{item?.recipientName}</td>
@@ -68,4 +65,5 @@ function MyDonationReq() {
   );
 }
 
-export default MyDonationReq;
+
+export default AllBloodDonationReq
