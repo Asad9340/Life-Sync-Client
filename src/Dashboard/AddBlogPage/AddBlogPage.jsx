@@ -1,16 +1,46 @@
 import { useState, useRef } from 'react';
 import JoditEditor from 'jodit-react';
 import HTMLReactParser from 'html-react-parser';
+import axios from 'axios';
 
 function AddBlogPage() {
   const editor = useRef(null);
   const [content, setContent] = useState('');
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const title = e.target.title.value;
+    const photo = e.target.photo.files[0];
+    const formData = new FormData();
+    formData.append('image', photo);
+    try {
+      const { data } = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${
+          import.meta.env.VITE_IMAGE_HOSTING_KEY
+        }`,
+        formData
+      );
+      if (!data.success) {
+        return;
+      } else {
+        var photoURL = data?.data.display_url;
+        console.log(photoURL);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+    const blogPost = {
+      title,
+      photoURL,
+      content,
+    };
+    console.log(blogPost);
+  };
   return (
     <div className="max-w-4xl mx-auto">
       <h1 className="text-3xl lg:text-4xl font-semibold text-center mt-10 lg:mt-20">
         Add Blog Page
       </h1>
-      <form>
+      <form onSubmit={handleSubmit}>
         <div className="mt-8">
           <label
             htmlFor="title"
@@ -58,7 +88,7 @@ function AddBlogPage() {
             />
           </label>
         </div>
-        <div className='mt-8'>
+        <div className="mt-8">
           <JoditEditor
             ref={editor}
             value={content}
@@ -68,7 +98,9 @@ function AddBlogPage() {
           <div>{HTMLReactParser(content)}</div>
         </div>
         <div className="mt-8 w-full">
-          <button className="btn btn-success w-full text-white">Success</button>
+          <button type="submit" className="btn btn-success w-full text-white">
+            Success
+          </button>
         </div>
       </form>
     </div>
