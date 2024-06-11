@@ -85,7 +85,7 @@ const router = createBrowserRouter([
       },
       {
         path: 'content-management/add-blog',
-        element:<AddBlogPage/>
+        element: <AddBlogPage />,
       },
       {
         path: 'my-donation-request',
