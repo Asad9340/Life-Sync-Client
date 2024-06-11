@@ -32,8 +32,11 @@ function AddBlogPage() {
       title,
       photoURL,
       content,
+      status: 'draft',
     };
     console.log(blogPost);
+    const { data } = await axios.post(`http://localhost:5000/blog-post`, blogPost);
+    console.log(data);
   };
   return (
     <div className="max-w-4xl mx-auto">
