@@ -1,28 +1,47 @@
 import axios from 'axios';
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { AuthContext } from '../../Firebase/AuthProvider';
+import Swal from 'sweetalert2';
 
 function ContentManagement() {
   const [blogPost, setBlogPost] = useState([]);
+  const [control, setControl] = useState(false);
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(`http://localhost:5000/blog-post`);
       setBlogPost(data);
     })();
-  }, []);
+  }, [control]);
 
-  const [userData, setUserData] = useState([]);
-  const { user } = useContext(AuthContext);
-  useEffect(() => {
-    (async () => {
-      const { data } = await axios.get(
-        `http://localhost:5000/users/${user?.email}`
-      );
-      setUserData(data[0]);
-    })();
-  }, [user?.email]);
-  console.log(userData.role);
+  const handlePublish = async id => {
+    const response = await axios.patch(
+      `http://localhost:5000/blog-post/publish/${id}`
+    );
+    if (response.data.modifiedCount) {
+      Swal.fire('Successful updated Status to Publish');
+      setControl(!control);
+    }
+  };
+  const handleUnPublish = async id => {
+    const response = await axios.patch(
+      `http://localhost:5000/blog-post/unpublished/${id}`
+    );
+    console.log(response);
+    if (response.data.modifiedCount) {
+      Swal.fire('Successful updated Status to Draft');
+      setControl(!control);
+    }
+  };
+  const handleDelete = async id => {
+    const response = await axios.delete(
+      `http://localhost:5000/blog-post/delete/${id}`
+    );
+    console.log(response)
+    if (response.data.deletedCount) {
+      Swal.fire('Successful updated Status to Draft');
+      setControl(!control);
+    }
+  };
 
   return (
     <>
@@ -50,6 +69,7 @@ function ContentManagement() {
                 <th>Content</th>
                 <th>Status</th>
                 <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
@@ -70,13 +90,26 @@ function ContentManagement() {
                   </td>
                   <td>{item.title}</td>
                   <td>{item.content}</td>
-                  <td>{item.status === 'draft' ? 'Draft' : 'Published'}</td>
+                  <td>{item.status === 'Draft' ? 'Draft' : 'Published'}</td>
                   <td>
-                    {item.status === 'draft' ? (
-                      <button className="btn btn-primary">Published</button>
+                    {item.status === 'Draft' ? (
+                      <button
+                        onClick={() => handlePublish(item._id)}
+                        className="btn btn-primary"
+                      >
+                        Publish
+                      </button>
                     ) : (
-                      <button className="btn btn-secondary">Unpublished</button>
+                      <button
+                        onClick={() => handleUnPublish(item._id)}
+                        className="btn btn-secondary"
+                      >
+                        Unpublished
+                      </button>
                     )}
+                  </td>
+                  <td>
+                    <button onClick={()=>handleDelete(item?._id)} className="btn btn-error">Delete</button>
                   </td>
                 </tr>
               ))}
