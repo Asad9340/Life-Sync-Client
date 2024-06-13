@@ -29,7 +29,7 @@ const AdminAnalysis = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <h1 className="text-2xl font-semibold mb-4">
-        Welcome to Admin Data Analytics
+        Welcome to  Data Analytics Page
       </h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div className="bg-blue-100 shadow-md p-6 rounded-lg">

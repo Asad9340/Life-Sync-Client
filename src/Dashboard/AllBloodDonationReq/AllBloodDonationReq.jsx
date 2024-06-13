@@ -1,9 +1,22 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '../../Firebase/AuthProvider';
 
 function AllBloodDonationReq() {
   const [myDonationReq, setMyDonationReq] = useState([]);
   const [control, setControl] = useState(false);
+
+  const [userData, setUserData] = useState([]);
+  const { user } = useContext(AuthContext);
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(
+        `http://localhost:5000/users/${user?.email}`
+      );
+      setUserData(data[0]);
+    })();
+  }, [user?.email]);
+
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
@@ -30,7 +43,7 @@ function AllBloodDonationReq() {
               <th>Donation Time</th>
               <th>Donation Status</th>
               <th>Edit</th>
-              <th>Delete</th>
+              {userData?.role === 'admin' && <th>Delete</th>}
               <th>View Details</th>
               <th></th>
             </tr>
@@ -48,12 +61,14 @@ function AllBloodDonationReq() {
                   <button className="btn btn-ghost btn-sm">Edit</button>
                 </td>
                 <td>
-                  <button
-                    onClick={() => handleDelete(item?._id)}
-                    className="btn btn-error btn-sm"
-                  >
-                    Delete
-                  </button>
+                  {userData?.role === 'admin' && (
+                    <button
+                      onClick={() => handleDelete(item?._id)}
+                      className="btn btn-error btn-sm"
+                    >
+                      Delete
+                    </button>
+                  )}
                 </td>
                 <th>1</th>
               </tr>
@@ -65,5 +80,4 @@ function AllBloodDonationReq() {
   );
 }
 
-
-export default AllBloodDonationReq
+export default AllBloodDonationReq;

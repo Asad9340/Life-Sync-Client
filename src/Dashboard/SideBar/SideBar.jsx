@@ -92,7 +92,7 @@ const SideBar = () => {
               </Link>
             </>
           )}
-          {userData?.role === 'admin' && (
+          {(userData?.role === 'admin' || userData?.role === 'volunteer') && (
             <>
               <Link to="all-blood-donation-request">
                 <ListItem>
