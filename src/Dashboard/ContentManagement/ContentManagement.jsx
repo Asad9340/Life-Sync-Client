@@ -1,11 +1,23 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { AuthContext } from '../../Firebase/AuthProvider';
 
 function ContentManagement() {
   const [blogPost, setBlogPost] = useState([]);
   const [control, setControl] = useState(false);
+  const [userData, setUserData] = useState([]);
+  const { user } = useContext(AuthContext);
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(
+        `http://localhost:5000/users/${user?.email}`
+      );
+      setUserData(data[0]);
+    })();
+  }, [user?.email]);
+
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(`http://localhost:5000/blog-post`);
@@ -36,7 +48,7 @@ function ContentManagement() {
     const response = await axios.delete(
       `http://localhost:5000/blog-post/delete/${id}`
     );
-    console.log(response)
+    console.log(response);
     if (response.data.deletedCount) {
       Swal.fire('Successful updated Status to Draft');
       setControl(!control);
@@ -68,8 +80,12 @@ function ContentManagement() {
                 <th>Title</th>
                 <th>Content</th>
                 <th>Status</th>
-                <th></th>
-                <th></th>
+                {userData?.role === 'admin' && (
+                  <>
+                    <th></th>
+                    <th></th>
+                  </>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -91,26 +107,35 @@ function ContentManagement() {
                   <td>{item.title}</td>
                   <td>{item.content}</td>
                   <td>{item.status === 'Draft' ? 'Draft' : 'Published'}</td>
-                  <td>
-                    {item.status === 'Draft' ? (
+                  {userData?.role === 'admin' && (
+                    <td>
+                      {item.status === 'Draft' ? (
+                        <button
+                          onClick={() => handlePublish(item._id)}
+                          className="btn btn-primary"
+                        >
+                          Publish
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleUnPublish(item._id)}
+                          className="btn btn-secondary"
+                        >
+                          Unpublished
+                        </button>
+                      )}
+                    </td>
+                  )}
+                  {userData?.role === 'admin' && (
+                    <td>
                       <button
-                        onClick={() => handlePublish(item._id)}
-                        className="btn btn-primary"
+                        onClick={() => handleDelete(item?._id)}
+                        className="btn btn-error"
                       >
-                        Publish
+                        Delete
                       </button>
-                    ) : (
-                      <button
-                        onClick={() => handleUnPublish(item._id)}
-                        className="btn btn-secondary"
-                      >
-                        Unpublished
-                      </button>
-                    )}
-                  </td>
-                  <td>
-                    <button onClick={()=>handleDelete(item?._id)} className="btn btn-error">Delete</button>
-                  </td>
+                    </td>
+                  )}
                 </tr>
               ))}
             </tbody>

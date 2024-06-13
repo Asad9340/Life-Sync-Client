@@ -104,7 +104,7 @@ const SideBar = () => {
               </Link>
             </>
           )}
-          {userData?.role === 'admin' && (
+          {(userData?.role === 'admin' || userData?.role === 'volunteer') && (
             <>
               <Link to="content-management">
                 <ListItem>
