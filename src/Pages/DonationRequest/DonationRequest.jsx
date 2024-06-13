@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function DonationRequest() {
   const [donationRequest, setDonationRequest] = useState([]);
@@ -15,7 +16,10 @@ function DonationRequest() {
   console.log(donationRequest);
 
   return (
-    <div>
+    <div className="my-12 lg:my-20">
+      <h2 className="text-4xl lg:text-5xl font-semibold lg:font-bold text-center mb-4 lg:mb-6">
+        Donation Request Page
+      </h2>
       <div className="overflow-x-auto">
         <table className="table">
           {/* head */}
@@ -39,7 +43,11 @@ function DonationRequest() {
                 </td>
                 <td>{donation?.donationDate}</td>
                 <td>{donation?.donationTime}</td>
-                <td><button className='btn btn-success'>View Details</button></td>
+                <td>
+                  <Link to='/view-details'>
+                    <button className="btn btn-success">View Details</button>
+                  </Link>
+                </td>
               </tr>
             ))}
           </tbody>
