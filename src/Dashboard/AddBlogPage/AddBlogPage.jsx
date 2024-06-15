@@ -36,7 +36,7 @@ function AddBlogPage() {
       content,
       status: 'Draft',
       authorEmail: user.email,
-      authorName: user.name,
+      authorName: user.displayName,
       createdAt: new Date(),
     };
     console.log(blogPost);

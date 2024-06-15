@@ -19,6 +19,7 @@ import AllBloodDonationReq from '../Dashboard/AllBloodDonationReq/AllBloodDonati
 import ContentManagement from '../Dashboard/ContentManagement/ContentManagement';
 import AddBlogPage from '../Dashboard/AddBlogPage/AddBlogPage';
 import ViewDetails from '../components/ViewDetails/ViewDetails';
+import BlogDetails from '../components/BlogDetails/BlogDetails';
 
 const router = createBrowserRouter([
   {
@@ -45,6 +46,10 @@ const router = createBrowserRouter([
       {
         path: '/blog',
         element: <Blog />,
+      },
+      {
+        path: '/view-full-blog/:_id',
+        element: <BlogDetails />,
       },
       {
         path: '/funding',

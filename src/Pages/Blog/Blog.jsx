@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function Blog() {
   const [blogPost, setBlogPost] = useState([]);
@@ -39,12 +40,21 @@ function Blog() {
                 </p>
                 <div
                   className="text-gray-700 mb-4"
-                  dangerouslySetInnerHTML={{ __html: post?.content }}
+                  dangerouslySetInnerHTML={{
+                    __html: `${post?.content.slice(0, 200)}${
+                      post?.content.length > 200 ? '...' : ''
+                    }`,
+                  }}
                 ></div>
                 <div className="flex justify-between items-center text-gray-500">
                   <p>By {post?.authorName}</p>
                   <p>{new Date(post?.createdAt).toLocaleDateString()}</p>
                 </div>
+              </div>
+              <div className="flex justify-center items-center mb-4 lg:mb-8">
+                <Link to={`/view-full-blog/${post?._id}`}>
+                  <button className="btn btn-primary">View Full Blog</button>
+                </Link>
               </div>
             </div>
           ))}

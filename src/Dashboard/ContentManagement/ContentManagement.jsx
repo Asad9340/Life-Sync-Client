@@ -105,7 +105,7 @@ function ContentManagement() {
                     </div>
                   </td>
                   <td>{item.title}</td>
-                  <td>{item.content}</td>
+                  <td>{item.content.slice(3, 50)}...</td>
                   <td>{item.status === 'Draft' ? 'Draft' : 'Published'}</td>
                   {userData?.role === 'admin' && (
                     <td>
