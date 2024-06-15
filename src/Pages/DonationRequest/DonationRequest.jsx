@@ -13,7 +13,6 @@ function DonationRequest() {
       setDonationRequest(data);
     })();
   }, []);
-  console.log(donationRequest);
 
   return (
     <div className="my-12 lg:my-20">
@@ -44,7 +43,7 @@ function DonationRequest() {
                 <td>{donation?.donationDate}</td>
                 <td>{donation?.donationTime}</td>
                 <td>
-                  <Link to='/view-details'>
+                  <Link to={`/view-details/${donation?._id}`}>
                     <button className="btn btn-success">View Details</button>
                   </Link>
                 </td>

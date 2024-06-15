@@ -1,11 +1,13 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useContext } from 'react';
 import JoditEditor from 'jodit-react';
 import HTMLReactParser from 'html-react-parser';
 import axios from 'axios';
+import { AuthContext } from '../../Firebase/AuthProvider';
 
 function AddBlogPage() {
   const editor = useRef(null);
   const [content, setContent] = useState('');
+  const { user } = useContext(AuthContext);
   const handleSubmit = async e => {
     e.preventDefault();
     const title = e.target.title.value;
@@ -33,6 +35,9 @@ function AddBlogPage() {
       photoURL,
       content,
       status: 'Draft',
+      authorEmail: user.email,
+      authorName: user.name,
+      createdAt: new Date(),
     };
     console.log(blogPost);
     const { data } = await axios.post(`http://localhost:5000/blog-post`, blogPost);

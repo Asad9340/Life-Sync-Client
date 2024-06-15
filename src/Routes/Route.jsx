@@ -35,8 +35,12 @@ const router = createBrowserRouter([
         element: <DonationRequest />,
       },
       {
-        path: '/view-details',
-        element: <ViewDetails/>,
+        path: '/view-details/:_id',
+        element: (
+          <PrivateRoute>
+            <ViewDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: '/blog',
