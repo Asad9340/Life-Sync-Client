@@ -26,9 +26,9 @@ function AllBloodDonationReq() {
     })();
   }, [control]);
   const handleDelete = async _id => {
-    console.log(_id);
     await axios.delete(`http://localhost:5000/donation-requests/${_id}`);
     setControl(!control);
+    
   };
   return (
     <div className="my-10 lg:my-20 mx-4 lg:mx-10">

@@ -45,6 +45,27 @@ function Board() {
       setControl(!control);
     }
   };
+  const handleDelete = id => {
+    Swal.fire({
+      title: 'Sure want to Delete?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async result => {
+      if (result.isConfirmed) {
+        const response = await axios.delete(
+          `http://localhost:5000/donation-requests/${id}`
+        );
+        if (response.data.deletedCount) {
+          Swal.fire('Successful Deleted Request');
+          setControl(!control);
+        }
+      }
+    });
+  };
 
   return (
     <div>
@@ -108,9 +129,18 @@ function Board() {
                         </button>
                       </td>
                       <td>
-                        <button className="btn btn-error btn-sm">Delete</button>
+                        <button
+                          onClick={() => handleDelete(donation?._id)}
+                          className="btn btn-error btn-sm"
+                        >
+                          Delete
+                        </button>
                       </td>
-                      <th>1</th>
+                      <th>
+                        <button className="btn btn-outline btn-sm">
+                          Details
+                        </button>
+                      </th>
                     </tr>
                   ))}
                 </tbody>
