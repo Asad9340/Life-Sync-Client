@@ -3,6 +3,7 @@ import { AuthContext } from '../../Firebase/AuthProvider';
 import axios from 'axios';
 import AdminAnalysis from './AdminAnalysis';
 import Swal from 'sweetalert2';
+import { Link } from 'react-router-dom';
 
 function Board() {
   const [userData, setUserData] = useState([]);
@@ -137,9 +138,11 @@ function Board() {
                         </button>
                       </td>
                       <th>
-                        <button className="btn btn-outline btn-sm">
-                          Details
-                        </button>
+                        <Link to={`/dashboard/view-details/${donation?._id}`}>
+                          <button className="btn btn-outline btn-sm">
+                            Details
+                          </button>
+                        </Link>
                       </th>
                     </tr>
                   ))}

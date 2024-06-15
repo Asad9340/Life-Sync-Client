@@ -20,6 +20,7 @@ import ContentManagement from '../Dashboard/ContentManagement/ContentManagement'
 import AddBlogPage from '../Dashboard/AddBlogPage/AddBlogPage';
 import ViewDetails from '../components/ViewDetails/ViewDetails';
 import BlogDetails from '../components/BlogDetails/BlogDetails';
+import DonationViewDetails from '../components/DonationViewDetails/DonationViewDetails';
 
 const router = createBrowserRouter([
   {
@@ -80,6 +81,10 @@ const router = createBrowserRouter([
       {
         path: '/dashboard',
         element: <Board />,
+      },
+      {
+        path: '/dashboard/view-details/:_id',
+        element: <DonationViewDetails />,
       },
       {
         path: 'profile',

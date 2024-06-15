@@ -15,7 +15,6 @@ function MyDonationReq() {
     })();
   }, [control, user?.email]);
   const handleDelete = async (_id) => {
-    console.log(_id);
     await axios.delete(`http://localhost:5000/donation-requests/${_id}`);
     setControl(!control);
   };
