@@ -6,18 +6,30 @@ import AdminAnalysis from './AdminAnalysis';
 function Board() {
   const [userData, setUserData] = useState([]);
   const { user } = useContext(AuthContext);
+  const [myDonationReq, setMyDonationReq] = useState([]);
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
         `http://localhost:5000/users/${user?.email}`
       );
-      console.log(data[0]?.role);
       setUserData(data[0]);
     })();
   }, [user?.email]);
+  useEffect(() => {
+    (async () => {
+      const { data } = await axios.get(
+        `http://localhost:5000/donation-requests/${user?.email}`
+      );
+      const filteredData = data.slice(0, 3);
+      setMyDonationReq(filteredData);
+    })();
+  }, [user?.email]);
+  console.log(myDonationReq);
   return (
-    <div className="text-3xl font-bold m-6 md:m-10 text-center">
-      Hello {userData?.name}. Welcome to LifeSync
+    <div>
+      <h2 className="text-3xl font-bold m-6 md:m-10 text-center">
+        Hello {userData?.name}. Welcome to LifeSync
+      </h2>
       {userData?.role === 'donor' && (
         <>
           <div className="overflow-x-auto">
@@ -37,51 +49,25 @@ function Board() {
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <th>1</th>
-                  <td>Emran</td>
-                  <td>Dhaka</td>
-                  <td>01/02/2024</td>
-                  <td>11:04PM</td>
-                  <td>Pending</td>
-                  <td>
-                    <button className="btn btn-ghost btn-sm">Edit</button>
-                  </td>
-                  <td>
-                    <button className="btn btn-error btn-sm">Delete</button>
-                  </td>
-                  <th>1</th>
-                </tr>
-                <tr>
-                  <th>1</th>
-                  <td>Emran</td>
-                  <td>Dhaka</td>
-                  <td>01/02/2024</td>
-                  <td>11:04PM</td>
-                  <td>Pending</td>
-                  <td>
-                    <button className="btn btn-ghost btn-sm">Edit</button>
-                  </td>
-                  <td>
-                    <button className="btn btn-error btn-sm">Delete</button>
-                  </td>
-                  <th>1</th>
-                </tr>
-                <tr>
-                  <th>1</th>
-                  <td>Emran</td>
-                  <td>Dhaka</td>
-                  <td>01/02/2024</td>
-                  <td>11:04PM</td>
-                  <td>Pending</td>
-                  <td>
-                    <button className="btn btn-ghost btn-sm">Edit</button>
-                  </td>
-                  <td>
-                    <button className="btn btn-error btn-sm">Delete</button>
-                  </td>
-                  <th>1</th>
-                </tr>
+                {myDonationReq.map((donation, index) => (
+                  <tr key={donation?._id}>
+                    <th>{index + 1}</th>
+                    <td>{donation?.recipientName}</td>
+                    <td>{donation?.address}</td>
+                    <td>{donation?.donationDate}</td>
+                    <td>{donation.donationTime}</td>
+                    <td>{donation?.status}</td>
+                    <td>
+                      <button className="btn btn-outline btn-primary btn-sm">
+                        Edit
+                      </button>
+                    </td>
+                    <td>
+                      <button className="btn btn-error btn-sm">Delete</button>
+                    </td>
+                    <th>1</th>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

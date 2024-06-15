@@ -14,7 +14,6 @@ function MyDonationReq() {
       setMyDonationReq(data);
     })();
   }, [control, user?.email]);
-  console.log('i am from hihihi',myDonationReq);
   const handleDelete = async (_id) => {
     console.log(_id);
     await axios.delete(`http://localhost:5000/donation-requests/${_id}`);
