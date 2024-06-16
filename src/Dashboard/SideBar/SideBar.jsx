@@ -5,7 +5,9 @@ import {
   ListItem,
   ListItemPrefix,
 } from '@material-tailwind/react';
-import { UserCircleIcon, PowerIcon } from '@heroicons/react/24/solid';
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { FaPowerOff, FaTimes } from 'react-icons/fa';
+import { UserCircleIcon } from '@heroicons/react/24/solid';
 import { Link, useNavigate } from 'react-router-dom';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../Firebase/AuthProvider';
@@ -14,13 +16,15 @@ import axios from 'axios';
 const SideBar = () => {
   const { logOut } = useContext(AuthContext);
   const navigate = useNavigate();
-  const handleLogOUt = () => {
+  const handleLogOut = () => {
     logOut();
     navigate('/');
   };
 
   const [userData, setUserData] = useState([]);
   const { user } = useContext(AuthContext);
+  const [isOpen, setIsOpen] = useState(false);
+
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
@@ -29,15 +33,38 @@ const SideBar = () => {
       setUserData(data[0]);
     })();
   }, [user?.email]);
+
   return (
-    <>
-      <Card className="h-[calc(100vh-2rem)] w-full max-w-[20rem] p-4 shadow-xl shadow-blue-gray-900/5">
-        <div className="mb-2 p-4">
+    <div className="relative">
+      <button
+        className="absolute top-4 left-4 md:hidden z-50 p-2 bg-gray-800 text-white rounded-md focus:outline-none"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <GiHamburgerMenu />
+      </button>
+      <div
+        className={`fixed inset-0 bg-gray-800 bg-opacity-50 z-40 transition-opacity md:hidden ${
+          isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        }`}
+        onClick={() => setIsOpen(false)}
+      ></div>
+      <Card
+        className={`h-full w-64 bg-white shadow-xl shadow-blue-gray-900/5 p-4 transition-transform transform md:translate-x-0 ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        } md:static fixed top-0 left-0 z-50`}
+      >
+        <div className="mb-2 p-4 flex justify-between items-center">
           <Link to="/">
             <Typography variant="h5" color="blue-gray">
               Home
             </Typography>
           </Link>
+          <button
+            className="md:hidden text-gray-600"
+            onClick={() => setIsOpen(false)}
+          >
+            <FaTimes />
+          </button>
         </div>
         <List>
           <Link to="/dashboard">
@@ -66,10 +93,6 @@ const SideBar = () => {
                   My Donation Requests
                 </ListItem>
               </Link>
-            </>
-          )}
-          {userData?.role === 'donor' && (
-            <>
               <Link to="create-donation-request">
                 <ListItem>
                   <ListItemPrefix>
@@ -102,10 +125,6 @@ const SideBar = () => {
                   All Blood Donation Request
                 </ListItem>
               </Link>
-            </>
-          )}
-          {(userData?.role === 'admin' || userData?.role === 'volunteer') && (
-            <>
               <Link to="content-management">
                 <ListItem>
                   <ListItemPrefix>
@@ -117,15 +136,15 @@ const SideBar = () => {
             </>
           )}
           <hr className="my-10" />
-          <ListItem onClick={handleLogOUt}>
+          <ListItem onClick={handleLogOut}>
             <ListItemPrefix>
-              <PowerIcon className="h-5 w-5" />
+              <FaPowerOff />
             </ListItemPrefix>
             Log Out
           </ListItem>
         </List>
       </Card>
-    </>
+    </div>
   );
 };
 

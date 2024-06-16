@@ -22,6 +22,7 @@ import ViewDetails from '../components/ViewDetails/ViewDetails';
 import BlogDetails from '../components/BlogDetails/BlogDetails';
 import DonationViewDetails from '../components/DonationViewDetails/DonationViewDetails';
 import DonationRequestEdit from '../components/DonationRequestEdit/DonationRequestEdit';
+import ElementsWrapper from '../components/ElementsWrapper/ElementsWrapper';
 
 const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ const router = createBrowserRouter([
       {
         path: '/funding',
         element: <Funding />,
+      },
+      {
+        path: '/checkout',
+        element: <ElementsWrapper/>
       },
       {
         path: '/signin',
