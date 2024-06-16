@@ -27,13 +27,15 @@ function SignUp() {
     })();
   }, []);
 
-  const handleSelectDistrict = (e) => {
+  const handleSelectDistrict = e => {
     console.log('district selected', e.target.value);
     const districtName = e.target.value;
     const districtId = district.findIndex(
       item => item.bn_name === districtName
     );
-    const filteredUpazila = upazila.filter(item => item.district_id == Number(districtId) + 1);
+    const filteredUpazila = upazila.filter(
+      item => item.district_id == Number(districtId) + 1
+    );
     console.log(filteredUpazila);
     setUpazila(filteredUpazila);
   };
@@ -86,7 +88,10 @@ function SignUp() {
       status: 'active',
     };
     console.log(user);
-    const { data } = await axios.post(`http://localhost:5000/users`, user);
+    const { data } = await axios.post(
+      `https://life-sync-server.vercel.app/users`,
+      user
+    );
     console.log(data);
     if (data.insertedId) {
       createUser(email, password)

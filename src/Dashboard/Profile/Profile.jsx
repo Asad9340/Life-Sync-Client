@@ -13,7 +13,7 @@ function Profile() {
     const fetchUserData = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/users/${user?.email}`
+          `https://life-sync-server.vercel.app/users/${user?.email}`
         );
         if (data && data.length > 0) {
           setUserData(data[0]);
@@ -70,7 +70,7 @@ function Profile() {
     console.log(UpdatedUserData);
     try {
       const response = await axios.patch(
-        `http://localhost:5000/users/${user?.email}`,
+        `https://life-sync-server.vercel.app/users/${user?.email}`,
         UpdatedUserData
       );
       console.log('Updated user data:', response.data);
@@ -109,7 +109,11 @@ function Profile() {
         <div className="flex flex-wrap">
           <div className="w-full px-4">
             <div className="relative w-full mb-3 flex justify-center">
-              <img className="w-96 rounded-lg" src={userData?.photoURL} alt="" />
+              <img
+                className="w-96 rounded-lg"
+                src={userData?.photoURL}
+                alt=""
+              />
             </div>
           </div>
           <div className="w-full lg:w-6/12 px-4">

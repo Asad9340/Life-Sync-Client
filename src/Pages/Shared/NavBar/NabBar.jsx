@@ -2,26 +2,29 @@ import { useContext, useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import logo from '../../../assets/images/logo.png';
 import { AuthContext } from '../../../Firebase/AuthProvider';
+
 function NavBar() {
-  const { user,logOut } = useContext(AuthContext);
+  const { user, logOut } = useContext(AuthContext);
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+
   const handleToggleMenu = () => {
     setOpen(!open);
   };
- const handleLogOut = () => {
-   logOut();
-   navigate('/');
- };
+
+  const handleLogOut = () => {
+    logOut();
+    navigate('/');
+  };
 
   return (
-    <nav className="bg-white border-gray-200 py-2.5 ">
+    <nav className="bg-white border-gray-200 py-2.5">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl px-4 mx-auto">
         <Link to="/" className="flex items-center">
-          <img src={logo} className="w-24" alt="Landwind Logo" />
+          <img src={logo} className="w-24" alt="LifeSync Logo" />
           <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
             <h2 className="text-black text-3xl lg:text-4xl font-semibold lg:font-bold">
-              Life<span className="text-red-500">S</span>ync
+              Life<span className="text-blue-500">S</span>ync
             </h2>
           </span>
         </Link>
@@ -48,78 +51,60 @@ function NavBar() {
           } w-full lg:flex lg:items-center lg:w-auto`}
         >
           <ul className="flex flex-col items-center mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-            <li>
-              <NavLink
-                to="/donation-request"
-                className={({ isActive }) =>
-                  isActive
-                    ? 'flex items-center  px-3 py-2 bg-orange-700 text-white rounded-md duration-300 font-semibold  font-lato'
-                    : 'flex items-center font-display text-black px-3 py-2'
-                }
-              >
-                Donation Requests
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/blog"
-                className={({ isActive }) =>
-                  isActive
-                    ? 'flex items-center  px-3 py-2 bg-orange-700 text-white rounded-md duration-300 font-semibold  font-lato'
-                    : 'flex items-center font-display text-black px-3 py-2 font-lato'
-                }
-              >
-                Blog
-              </NavLink>
-            </li>
-            <li>
-              <NavLink
-                to="/funding"
-                className={({ isActive }) =>
-                  isActive
-                    ? 'flex items-center  px-3 py-2 bg-orange-700 text-white rounded-md duration-300 font-semibold  font-lato'
-                    : 'flex items-center font-display text-black px-3 py-2 font-lato'
-                }
-              >
-                Funding
-              </NavLink>
-            </li>
+            {[
+              { to: '/donation-request', label: 'Donation Requests' },
+              { to: '/blog', label: 'Blog' },
+              { to: '/funding', label: 'Funding' },
+            ].map(link => (
+              <li key={link.to}>
+                <NavLink
+                  to={link.to}
+                  className={({ isActive }) =>
+                    isActive
+                      ? 'flex items-center px-3 py-2 bg-blue-500 text-white rounded-md duration-300 font-semibold'
+                      : 'flex items-center text-gray-800 px-3 py-2 font-lato'
+                  }
+                >
+                  {link.label}
+                </NavLink>
+              </li>
+            ))}
             {user ? (
-              <>
-                <div className="dropdown dropdown-end">
-                  <div
-                    tabIndex={0}
-                    role="button"
-                    className="btn btn-ghost btn-circle avatar"
-                  >
-                    <div className="w-10 rounded-full">
-                      <img
-                        alt="Tailwind CSS Navbar component"
-                        src={
-                          user?.photoURL
-                            ? user?.photoURL
-                            : 'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'
-                        }
-                      />
-                    </div>
+              <div className="dropdown dropdown-end">
+                <div
+                  tabIndex={0}
+                  role="button"
+                  className="btn btn-ghost btn-circle avatar"
+                >
+                  <div className="w-10 rounded-full">
+                    <img
+                      alt="User Avatar"
+                      src={
+                        user?.photoURL ||
+                        'https://img.daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg'
+                      }
+                    />
                   </div>
-                  <ul
-                    tabIndex={0}
-                    className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
-                  >
-                    <li>
-                      <Link to='/dashboard' className="justify-between">Dashboard</Link>
-                    </li>
-
-                    <li>
-                      <p onClick={handleLogOut}>Logout</p>
-                    </li>
-                  </ul>
                 </div>
-              </>
+                <ul
+                  tabIndex={0}
+                  className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52"
+                >
+                  <li>
+                    <Link to="/dashboard" className="justify-between">
+                      Dashboard
+                    </Link>
+                  </li>
+                  <li>
+                    <p onClick={handleLogOut} className="cursor-pointer">
+                      Logout
+                    </p>
+                  </li>
+                </ul>
+              </div>
             ) : (
               <Link to="/signin">
-                <button className="bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:from-blue-500 hover:via-blue-600 hover:to-blue-700 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:shadow-lg transition duration-300 ease-in-out transform hover:-translate-y-0.5 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 text-xl">
+                <button className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded-lg transition duration-300">
                   Login
                 </button>
               </Link>

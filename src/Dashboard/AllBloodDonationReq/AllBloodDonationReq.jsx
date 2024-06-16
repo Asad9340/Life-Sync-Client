@@ -1,35 +1,55 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '../../Firebase/AuthProvider';
 import { Link } from 'react-router-dom';
+import { AuthContext } from '../../Firebase/AuthProvider';
 
 function AllBloodDonationReq() {
   const [myDonationReq, setMyDonationReq] = useState([]);
   const [control, setControl] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [requestsPerPage] = useState(10); // Number of requests per page
 
   const [userData, setUserData] = useState([]);
   const { user } = useContext(AuthContext);
+
   useEffect(() => {
-    (async () => {
+    const fetchUserData = async () => {
       const { data } = await axios.get(
-        `http://localhost:5000/users/${user?.email}`
+        `https://life-sync-server.vercel.app/users/${user?.email}`
       );
       setUserData(data[0]);
-    })();
+    };
+    fetchUserData();
   }, [user?.email]);
 
   useEffect(() => {
-    (async () => {
+    const fetchDonationRequests = async () => {
       const { data } = await axios.get(
-        'http://localhost:5000/donation-requests'
+        'https://life-sync-server.vercel.app/donation-requests'
       );
       setMyDonationReq(data);
-    })();
+    };
+    fetchDonationRequests();
   }, [control]);
+
   const handleDelete = async _id => {
-    await axios.delete(`http://localhost:5000/donation-requests/${_id}`);
+    await axios.delete(
+      `https://life-sync-server.vercel.app/donation-requests/${_id}`
+    );
     setControl(!control);
   };
+
+  // Get current posts
+  const indexOfLastRequest = currentPage * requestsPerPage;
+  const indexOfFirstRequest = indexOfLastRequest - requestsPerPage;
+  const currentRequests = myDonationReq.slice(
+    indexOfFirstRequest,
+    indexOfLastRequest
+  );
+
+  // Change page
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
   return (
     <div className="my-10 lg:my-20 mx-4 lg:mx-10">
       <div className="overflow-x-auto">
@@ -49,9 +69,9 @@ function AllBloodDonationReq() {
             </tr>
           </thead>
           <tbody>
-            {myDonationReq.map((item, index) => (
+            {currentRequests.map((item, index) => (
               <tr key={item._id}>
-                <th>{index + 1}</th>
+                <th>{index + 1 + (currentPage - 1) * requestsPerPage}</th>
                 <td>{item?.recipientName}</td>
                 <td>{item?.address}</td>
                 <td>{item?.donationDate}</td>
@@ -83,6 +103,20 @@ function AllBloodDonationReq() {
             ))}
           </tbody>
         </table>
+        <div className="flex justify-center mt-4">
+          {Array.from(
+            { length: Math.ceil(myDonationReq.length / requestsPerPage) },
+            (_, i) => (
+              <button
+                key={i}
+                onClick={() => paginate(i + 1)}
+                className="px-4 py-2 mx-1 border rounded bg-blue-gray-700 text-white"
+              >
+                {i + 1}
+              </button>
+            )
+          )}
+        </div>
       </div>
     </div>
   );

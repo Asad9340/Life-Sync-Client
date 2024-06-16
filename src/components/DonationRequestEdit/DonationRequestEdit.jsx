@@ -13,7 +13,7 @@ function DonationRequestEdit() {
   useEffect(() => {
     (async () => {
       const response = await axios.get(
-        `http://localhost:5000/donation-requests/view-details/${_id}`
+        `https://life-sync-server.vercel.app/donation-requests/view-details/${_id}`
       );
       setDetailsData(response.data);
       setControl(!control);
@@ -77,7 +77,7 @@ function DonationRequestEdit() {
     };
     try {
       const res = await axios.patch(
-        `http://localhost:5000/donation-requests/edit/${_id}`,
+        `https://life-sync-server.vercel.app/donation-requests/edit/${_id}`,
         donationRequest
       );
       if (res.data.modifiedCount) {
@@ -150,9 +150,7 @@ function DonationRequestEdit() {
             onBlur={handleSelectDistrict}
             className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           >
-            <option
-              defaultValue={data?.recipientDistrict}
-            >
+            <option defaultValue={data?.recipientDistrict}>
               Select District Name
             </option>
             {district.map(item => (

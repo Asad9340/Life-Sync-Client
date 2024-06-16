@@ -1,4 +1,5 @@
 import Banner from '../../../components/Banner/Banner';
+import BloodDonationFeatured from '../../../components/BloodDonationFeatured/BloodDonationFeatured';
 import ContactUs from '../../../components/ContactUs/ContactUs';
 
 function HomePage() {
@@ -11,7 +12,11 @@ function HomePage() {
         buttonText1="Join as a donor"
         buttonText2="Search Donors"
       />
-      <ContactUs contactNumber="01710101984" emailAddress='asadulimran1999@gmail.com' />
+      <BloodDonationFeatured />
+      <ContactUs
+        contactNumber="01710101984"
+        emailAddress="asadulimran1999@gmail.com"
+      />
     </>
   );
 }

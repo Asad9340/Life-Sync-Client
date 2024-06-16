@@ -23,6 +23,7 @@ import BlogDetails from '../components/BlogDetails/BlogDetails';
 import DonationViewDetails from '../components/DonationViewDetails/DonationViewDetails';
 import DonationRequestEdit from '../components/DonationRequestEdit/DonationRequestEdit';
 import ElementsWrapper from '../components/ElementsWrapper/ElementsWrapper';
+import LearnMore from '../components/LearnMore/LearnMore';
 
 const router = createBrowserRouter([
   {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
       {
         path: '/donation-request',
         element: <DonationRequest />,
+      },
+      {
+        path: '/why-donate',
+        element: <LearnMore />,
       },
       {
         path: '/view-details/:_id',
@@ -60,7 +65,7 @@ const router = createBrowserRouter([
       },
       {
         path: '/checkout',
-        element: <ElementsWrapper/>
+        element: <ElementsWrapper />,
       },
       {
         path: '/signin',

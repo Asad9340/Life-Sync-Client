@@ -28,13 +28,16 @@ function SearchPage() {
 
   const handleSearch = async e => {
     e.preventDefault();
-    const { data } = await axios.get('http://localhost:5000/donors', {
-      params: {
-        bloodGroup,
-        district: selectedDistrict,
-        upazila: selectedUpazila,
-      },
-    });
+    const { data } = await axios.get(
+      'https://life-sync-server.vercel.app/donors',
+      {
+        params: {
+          bloodGroup,
+          district: selectedDistrict,
+          upazila: selectedUpazila,
+        },
+      }
+    );
     setDonors(data);
   };
 

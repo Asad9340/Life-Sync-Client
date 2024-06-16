@@ -40,7 +40,10 @@ function AddBlogPage() {
       createdAt: new Date(),
     };
     console.log(blogPost);
-    const { data } = await axios.post(`http://localhost:5000/blog-post`, blogPost);
+    const { data } = await axios.post(
+      `https://life-sync-server.vercel.app/blog-post`,
+      blogPost
+    );
     console.log(data);
   };
   return (
