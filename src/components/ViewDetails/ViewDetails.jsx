@@ -1,9 +1,11 @@
 import axios from 'axios';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { AuthContext } from '../../Firebase/AuthProvider';
 
 function ViewDetails() {
+  const { user } = useContext(AuthContext);
   const [donationRequestSingleData, setDonationRequestSingleData] = useState(
     []
   );
@@ -21,7 +23,22 @@ function ViewDetails() {
   const handleDonate = () => {
     Swal.fire({
       title: 'Want to Donate?',
-      text: "You won't be able to change this!",
+      html: `
+              <input
+                type="text"
+                disabled
+                required
+                placeholder="${user?.displayName}"
+                defaultValue={user?.displayName}
+              /> <br /> <br /> 
+              <input
+                type="email"
+                disabled
+                required
+                placeholder="${user?.email}"
+                defaultValue={user?.displayName}
+              />
+  `,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonColor: '#3085d6',

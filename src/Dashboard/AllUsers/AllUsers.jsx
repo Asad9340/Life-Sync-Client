@@ -7,14 +7,17 @@ function AllUsers() {
   const [userData, setUserData] = useState([]);
   const { user } = useContext(AuthContext);
   const [control, setControl] = useState(false);
+  const [statusFilter, setStatusFilter] = useState(''); // Add state for filter
+
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(`http://localhost:5000/users`);
       setUserData(data);
     })();
   }, [user?.email, control]);
+
   const handleBlock = async (id, status, role) => {
-    if (status == 'active' && role !== 'admin') {
+    if (status === 'active' && role !== 'admin') {
       const response = await axios.patch(
         `http://localhost:5000/users/block/${id}`
       );
@@ -28,8 +31,9 @@ function AllUsers() {
       Swal.fire('Status is already Blocked');
     }
   };
+
   const handleUnBlock = async (id, status, role) => {
-    if (status == 'block' && role !== 'admin') {
+    if (status === 'block' && role !== 'admin') {
       const response = await axios.patch(
         `http://localhost:5000/users/active/${id}`
       );
@@ -43,8 +47,9 @@ function AllUsers() {
       Swal.fire('Status is already active');
     }
   };
+
   const handleVolunteer = async (id, role) => {
-    if (role == 'donor') {
+    if (role === 'donor') {
       const response = await axios.patch(
         `http://localhost:5000/users/volunteer/${id}`
       );
@@ -56,8 +61,9 @@ function AllUsers() {
       Swal.fire('Account is already Volunteer');
     }
   };
+
   const handleAdmin = async (id, role) => {
-    if (role == 'donor' || role =='volunteer') {
+    if (role === 'donor' || role === 'volunteer') {
       const response = await axios.patch(
         `http://localhost:5000/users/makeAdmin/${id}`
       );
@@ -69,8 +75,36 @@ function AllUsers() {
       Swal.fire('Account is already Admin');
     }
   };
+
+  const handleStatusChange = event => {
+    setStatusFilter(event.target.value); // Update filter state
+  };
+
+  const filteredUsers = statusFilter
+    ? userData.filter(user => user.status === statusFilter)
+    : userData;
+
   return (
     <div className="my-10">
+      <div className="mb-4">
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="status"
+        >
+          Filter by Status
+        </label>
+        <select
+          id="status"
+          value={statusFilter}
+          onChange={handleStatusChange}
+          className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+        >
+          <option value="">All</option>
+          <option value="active">Active</option>
+          <option value="block">Blocked</option>
+        </select>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="table">
           {/* head */}
@@ -89,8 +123,7 @@ function AllUsers() {
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
-            {userData?.map(item => (
+            {filteredUsers?.map(item => (
               <tr key={item._id}>
                 <td>
                   <div className="mask mask-squircle w-12 h-12">
@@ -123,9 +156,7 @@ function AllUsers() {
                 </td>
                 <td>
                   <button
-                    onClick={() =>
-                      handleVolunteer(item?._id, item?.role)
-                    }
+                    onClick={() => handleVolunteer(item?._id, item?.role)}
                     className="btn btn-sm btn-active btn-primary"
                   >
                     Volunteer
@@ -133,9 +164,7 @@ function AllUsers() {
                 </td>
                 <td>
                   <button
-                    onClick={() =>
-                      handleAdmin(item?._id, item?.role)
-                    }
+                    onClick={() => handleAdmin(item?._id, item?.role)}
                     className="btn btn-sm btn-active btn-primary"
                   >
                     Admin

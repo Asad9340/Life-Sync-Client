@@ -20,7 +20,7 @@ function DonationRequestEdit() {
     })();
   }, [control, _id]);
   const [data] = detailsData;
-
+  console.log(data);
   const [district, setDistrict] = useState([]);
   const [upazila, setUpazila] = useState([]);
   useEffect(() => {
@@ -150,7 +150,9 @@ function DonationRequestEdit() {
             onBlur={handleSelectDistrict}
             className="block w-full pl-4 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           >
-            <option value="" defaultValue="">
+            <option
+              defaultValue={data?.recipientDistrict}
+            >
               Select District Name
             </option>
             {district.map(item => (
@@ -166,7 +168,7 @@ function DonationRequestEdit() {
             required
             className="block w-full pl-4 py-3   text-gray-950  bg-white border border-gray-300 rounded-lg      dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
           >
-            <option value="" defaultValue="">
+            <option value="" defaultValue={data?.recipientUpazila}>
               Select Upazila Name
             </option>
             {upazila.map(item => (

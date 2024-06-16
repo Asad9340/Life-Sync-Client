@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../Firebase/AuthProvider';
+import { Link } from 'react-router-dom';
 
 function AllBloodDonationReq() {
   const [myDonationReq, setMyDonationReq] = useState([]);
@@ -28,7 +29,6 @@ function AllBloodDonationReq() {
   const handleDelete = async _id => {
     await axios.delete(`http://localhost:5000/donation-requests/${_id}`);
     setControl(!control);
-    
   };
   return (
     <div className="my-10 lg:my-20 mx-4 lg:mx-10">
@@ -58,7 +58,11 @@ function AllBloodDonationReq() {
                 <td>{item?.donationTime}</td>
                 <td>{item?.status}</td>
                 <td>
-                  <button className="btn btn-ghost btn-sm">Edit</button>
+                  <Link to={`/dashboard/edit/${item?._id}`}>
+                    <button className="btn btn-outline btn-primary btn-sm">
+                      Edit
+                    </button>
+                  </Link>
                 </td>
                 <td>
                   {userData?.role === 'admin' && (
@@ -70,7 +74,11 @@ function AllBloodDonationReq() {
                     </button>
                   )}
                 </td>
-                <th>1</th>
+                <th>
+                  <Link to={`/dashboard/view-details/${item?._id}`}>
+                    <button className="btn btn-outline btn-sm">Details</button>
+                  </Link>
+                </th>
               </tr>
             ))}
           </tbody>
