@@ -3,13 +3,15 @@ import { AuthContext } from '../../Firebase/AuthProvider';
 import axios from 'axios';
 import AdminAnalysis from './AdminAnalysis';
 import Swal from 'sweetalert2';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 function Board() {
   const [userData, setUserData] = useState([]);
+  const [realData, setRealData] = useState([]);
   const { user } = useContext(AuthContext);
   const [control, setControl] = useState(false);
   const [myDonationReq, setMyDonationReq] = useState([]);
+  const navigate = useNavigate();
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
@@ -23,6 +25,7 @@ function Board() {
       const { data } = await axios.get(
         `http://localhost:5000/donation-requests/${user?.email}`
       );
+      setRealData(data);
       const filteredData = data.slice(0, 3);
       setMyDonationReq(filteredData);
     })();
@@ -67,7 +70,9 @@ function Board() {
       }
     });
   };
-
+  const handleViewAllRequest = () => {
+navigate('/dashboard/my-donation-request');
+}
   return (
     <div>
       <h2 className="text-3xl font-bold m-6 md:m-10 text-center">
@@ -125,9 +130,11 @@ function Board() {
                         ) : null}{' '}
                       </td>
                       <td>
-                        <button className="btn btn-outline btn-primary btn-sm">
-                          Edit
-                        </button>
+                        <Link to={`/dashboard/edit/${donation?._id}`}>
+                          <button className="btn btn-outline btn-primary btn-sm">
+                            Edit
+                          </button>
+                        </Link>
                       </td>
                       <td>
                         <button
@@ -148,6 +155,16 @@ function Board() {
                   ))}
                 </tbody>
               </table>
+              {realData.length > 0 ? (
+                <div className="text-center my-8 lg:my-12">
+                  <button
+                    onClick={handleViewAllRequest}
+                    className="btn btn-primary"
+                  >
+                    View My All Request
+                  </button>
+                </div>
+              ) : null}
             </div>
           ) : (
             <div className="text-red-500 text-center mt-4">

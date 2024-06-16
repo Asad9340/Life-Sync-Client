@@ -21,6 +21,7 @@ import AddBlogPage from '../Dashboard/AddBlogPage/AddBlogPage';
 import ViewDetails from '../components/ViewDetails/ViewDetails';
 import BlogDetails from '../components/BlogDetails/BlogDetails';
 import DonationViewDetails from '../components/DonationViewDetails/DonationViewDetails';
+import DonationRequestEdit from '../components/DonationRequestEdit/DonationRequestEdit';
 
 const router = createBrowserRouter([
   {
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
       {
         path: '/dashboard/view-details/:_id',
         element: <DonationViewDetails />,
+      },
+      {
+        path: '/dashboard/edit/:_id',
+        element: <DonationRequestEdit />,
       },
       {
         path: 'profile',

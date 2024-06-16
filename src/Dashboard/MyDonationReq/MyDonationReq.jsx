@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../Firebase/AuthProvider';
+import { Link } from 'react-router-dom';
 
 function MyDonationReq() {
   const [myDonationReq, setMyDonationReq] = useState([]);
@@ -14,7 +15,7 @@ function MyDonationReq() {
       setMyDonationReq(data);
     })();
   }, [control, user?.email]);
-  const handleDelete = async (_id) => {
+  const handleDelete = async _id => {
     await axios.delete(`http://localhost:5000/donation-requests/${_id}`);
     setControl(!control);
   };
@@ -37,7 +38,7 @@ function MyDonationReq() {
             </tr>
           </thead>
           <tbody>
-            {myDonationReq.map((item,index) => (
+            {myDonationReq.map((item, index) => (
               <tr key={item._id}>
                 <th>{index + 1}</th>
                 <td>{item?.recipientName}</td>
@@ -46,7 +47,11 @@ function MyDonationReq() {
                 <td>{item?.donationTime}</td>
                 <td>{item?.status}</td>
                 <td>
-                  <button className="btn btn-ghost btn-sm">Edit</button>
+                  <Link to={`/dashboard/edit/${item?._id}`}>
+                    <button className="btn btn-outline btn-primary btn-sm">
+                      Edit
+                    </button>
+                  </Link>
                 </td>
                 <td>
                   <button
@@ -56,7 +61,11 @@ function MyDonationReq() {
                     Delete
                   </button>
                 </td>
-                <th>1</th>
+                <th>
+                  <Link to={`/dashboard/view-details/${item?._id}`}>
+                    <button className="btn btn-outline btn-sm">Details</button>
+                  </Link>
+                </th>
               </tr>
             ))}
           </tbody>

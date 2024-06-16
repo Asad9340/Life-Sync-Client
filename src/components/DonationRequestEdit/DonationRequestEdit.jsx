@@ -1,41 +1,25 @@
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../../Firebase/AuthProvider';
+import { useNavigate, useParams } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
-function CreateDonationReq() {
+function DonationRequestEdit() {
   const { user } = useContext(AuthContext);
+  const { _id } = useParams();
+  const [detailsData, setDetailsData] = useState([]);
+  const [control, setControl] = useState(false);
   const navigate = useNavigate();
-  const [district, setDistrict] = useState([]);
-  const [upazila, setUpazila] = useState([]);
   useEffect(() => {
     (async () => {
-      const res = await fetch('/districts.json');
-      const data = await res.json();
-      setDistrict(data[2].data);
+      const response = await axios.get(
+        `http://localhost:5000/donation-requests/view-details/${_id}`
+      );
+      setDetailsData(response.data);
+      setControl(!control);
     })();
-  }, []);
-  useEffect(() => {
-    (async () => {
-      const res = await fetch('/upazilas.json');
-      const data = await res.json();
-      setUpazila(data[2].data);
-    })();
-  }, []);
-
-  const handleSelectDistrict = e => {
-    console.log('district selected', e.target.value);
-    const districtName = e.target.value;
-    const districtId = district.findIndex(
-      item => item.bn_name === districtName
-    );
-    const filteredUpazila = upazila.filter(
-      item => item.district_id == Number(districtId) + 1
-    );
-    console.log(filteredUpazila);
-    setUpazila(filteredUpazila);
-  };
+  }, [control, _id]);
+  const [data] = detailsData;
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -62,26 +46,22 @@ function CreateDonationReq() {
       email,
     };
     try {
-      const res = await axios.post(
-        'http://localhost:5000/donation-requests',
+      const res = await axios.patch(
+        `http://localhost:5000/donation-requests/edit/${_id}`,
         donationRequest
       );
-      console.log(res);
-      if (res.data.insertedId) {
-        Swal.fire('Successful Added Donation Information');
-        navigate('/dashboard/my-donation-request');
+      if (res.data.modifiedCount) {
+        Swal.fire('Successful updated Information');
+        navigate('/dashboard');
       }
-      // Handle success, e.g., show a success message or redirect
     } catch (error) {
       console.error('Error creating donation request:', error);
-      // Handle error, e.g., show an error message
     }
   };
-
   return (
-    <div className="max-w-5xl mx-auto  w-full">
-      <h2 className="text-3xl font-bold mb-4 text-center my-8 md:my-14">
-        Donation Request Form
+    <div>
+      <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold lg:font-bold my-8 lg:my-14 text-center ">
+        Edit Donation Request{' '}
       </h2>
       <form
         onSubmit={handleSubmit}
@@ -97,7 +77,6 @@ function CreateDonationReq() {
           <input
             type="text"
             disabled
-            required
             placeholder="Name"
             defaultValue={user?.displayName}
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -113,7 +92,6 @@ function CreateDonationReq() {
           <input
             type="text"
             disabled
-            required
             placeholder="Name"
             defaultValue={user?.email}
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -130,58 +108,42 @@ function CreateDonationReq() {
             type="text"
             name="recipientName"
             id="name"
-            required
+            defaultValue={data?.recipientName}
             placeholder="Name"
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
           />
         </div>
-          <div className="relative mt-4">
-            <select
-              name="district"
-              required
-              onBlur={handleSelectDistrict}
-              className="block w-full px-36 py-3 text-gray-950 bg-white border border-gray-300 rounded-lg dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            >
-              <option value="" defaultValue="">
-                Select District Name
-              </option>
-              {district.map(item => (
-                <option key={item.id} value={item.bn_name}>
-                  {item.bn_name}
-                </option>
-              ))}
-            </select>
+        <div className="relative w-full mb-3">
+          <label
+            className="block text-blueGray-600 text-xs font-bold mb-2"
+            htmlFor="recipientDistrict"
+          >
+            Recipient District
+          </label>
+          <input
+            type="text"
+            name="recipientDistrict"
+            defaultValue={data?.recipientDistrict}
+            id="recipientDistrict"
+            placeholder="recipientDistrict"
+            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+          />
         </div>
-          <div className="relative mt-4">
-            <select
-              name="upazila"
-              required
-              className="block w-full px-36 py-3   text-gray-950  bg-white border border-gray-300 rounded-lg      dark:text-gray-950  dark:border-gray-600 focus:border-blue-400 dark:focus:border-blue-300 focus:ring-blue-300 focus:outline-none focus:ring focus:ring-opacity-40"
-            >
-              <option value="" defaultValue="">
-                Select Upazila Name
-              </option>
-              {upazila.map(item => (
-                <option key={item.id} value={item.bn_name}>
-                  {item.bn_name}
-                </option>
-              ))}
-            </select>
-            <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-6 h-6 text-gray-300 dark:text-gray-500"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9 5l7 7-7 7"
-                />
-              </svg>
-            </div>
+        <div className="relative w-full mb-3">
+          <label
+            className="block text-blueGray-600 text-xs font-bold mb-2"
+            htmlFor="recipientUpazila"
+          >
+            Recipient Upazila
+          </label>
+          <input
+            type="text"
+            name="recipientUpazila"
+            id="recipientUpazila"
+            defaultValue={data?.recipientUpazila}
+            placeholder="Recipient Upazila"
+            className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
+          />
         </div>
         <div className="relative w-full mb-3">
           <label
@@ -193,7 +155,7 @@ function CreateDonationReq() {
           <input
             type="text"
             name="hospitalName"
-            required
+            defaultValue={data?.hospitalName}
             id="hospitalName"
             placeholder="Hospital Name"
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -209,8 +171,8 @@ function CreateDonationReq() {
           <input
             type="text"
             name="address"
+            defaultValue={data?.address}
             id="address"
-            required
             placeholder="Full Address"
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
           />
@@ -224,8 +186,8 @@ function CreateDonationReq() {
           </label>
           <input
             type="date"
-            required
             name="donationDate"
+            defaultValue={data?.donationDate}
             id="donationDate"
             placeholder="Donation Date"
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -240,8 +202,8 @@ function CreateDonationReq() {
           </label>
           <input
             type="time"
-            required
             name="donationTime"
+            defaultValue={data?.donationTime}
             id="donationTime"
             placeholder="Donation Time"
             className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
@@ -254,7 +216,7 @@ function CreateDonationReq() {
           <textarea
             placeholder="Description"
             name="textarea"
-            required
+            defaultValue={data?.description}
             className="textarea textarea-bordered textarea-sm w-full max-w-5xl"
           ></textarea>
         </div>
@@ -269,4 +231,4 @@ function CreateDonationReq() {
   );
 }
 
-export default CreateDonationReq;
+export default DonationRequestEdit;
