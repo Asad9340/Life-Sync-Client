@@ -1,66 +1,59 @@
-import  { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const SearchPage = () => {
+function SearchPage() {
   const [bloodGroup, setBloodGroup] = useState('');
-  const [districtName, setDistrictName] = useState('');
-  const [upazilaName, setUpazilaName] = useState('');
-  const [district, setDistrict] = useState([]);
-  const [upazila, setUpazila] = useState([]);
-  const [searchResults, setSearchResults] = useState([]);
+  const [districts, setDistricts] = useState([]);
+  const [upazilas, setUpazilas] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState('');
+  const [selectedUpazila, setSelectedUpazila] = useState('');
+  const [donors, setDonors] = useState([]);
+
   useEffect(() => {
+    // Fetch district data
     (async () => {
       const res = await fetch('/districts.json');
       const data = await res.json();
-      setDistrict(data[2].data);
+      setDistricts(data[2].data);
     })();
-  }, []);
+  });
+
   useEffect(() => {
     (async () => {
       const res = await fetch('/upazilas.json');
       const data = await res.json();
-      setUpazila(data[2].data);
+      setUpazilas(data[2].data);
     })();
   }, []);
-  const handleSearch = () => {
-    const dummyData = [
-      {
-        name: 'John Doe',
-        bloodGroup: 'A+',
-        district: 'Dhaka',
-        upazila: 'Gulshan',
+
+  const handleSearch = async e => {
+    e.preventDefault();
+    const { data } = await axios.get('http://localhost:5000/donors', {
+      params: {
+        bloodGroup,
+        district: selectedDistrict,
+        upazila: selectedUpazila,
       },
-      {
-        name: 'Jane Smith',
-        bloodGroup: 'B-',
-        district: 'Chittagong',
-        upazila: 'Bayezid',
-      },
-      // Add more dummy data as needed
-    ];
-    // Filtering based on the input values
-    const filteredResults = dummyData.filter(donor => {
-      return (
-        (bloodGroup === '' || donor.bloodGroup === bloodGroup) &&
-        (district === '' || donor.district === district) &&
-        (upazila === '' || donor.upazila === upazila)
-      );
     });
-    setSearchResults(filteredResults);
+    setDonors(data);
   };
 
   return (
-    <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-4">Search Donors</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+    <div className="container mx-auto my-10">
+      <h2 className="text-3xl font-semibold mb-6">Search Donors</h2>
+      <form onSubmit={handleSearch} className="space-y-4">
         <div>
-          <label htmlFor="bloodGroup" className="block mb-1">
+          <label
+            htmlFor="bloodGroup"
+            className="block text-sm font-medium text-gray-700"
+          >
             Blood Group
           </label>
           <select
             id="bloodGroup"
-            className="block w-full border rounded-md py-2 px-4 focus:outline-none focus:border-blue-500"
             value={bloodGroup}
             onChange={e => setBloodGroup(e.target.value)}
+            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             <option value="">Select Blood Group</option>
             <option value="A+">A+</option>
@@ -74,66 +67,103 @@ const SearchPage = () => {
           </select>
         </div>
         <div>
-          <label htmlFor="district" className="block mb-1">
+          <label
+            htmlFor="district"
+            className="block text-sm font-medium text-gray-700"
+          >
             District
           </label>
           <select
             id="district"
-            className="block w-full border rounded-md py-2 px-4 focus:outline-none focus:border-blue-500"
-            value={districtName}
-            onChange={e => setDistrictName(e.target.value)}
+            value={selectedDistrict}
+            onChange={e => setSelectedDistrict(e.target.value)}
+            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             <option value="">Select District</option>
-            {district.map(item => (
-              <option key={item.id} value={item.bn_name}>
-                {item.bn_name}
+            {districts.map(district => (
+              <option key={district.id} value={district.id}>
+                {district.name}
               </option>
             ))}
           </select>
         </div>
         <div>
-          <label htmlFor="upazila" className="block mb-1">
+          <label
+            htmlFor="upazila"
+            className="block text-sm font-medium text-gray-700"
+          >
             Upazila
           </label>
           <select
             id="upazila"
-            className="block w-full border rounded-md py-2 px-4 focus:outline-none focus:border-blue-500"
-            value={upazilaName}
-            onChange={e => setUpazilaName(e.target.value)}
+            value={selectedUpazila}
+            onChange={e => setSelectedUpazila(e.target.value)}
+            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
           >
             <option value="">Select Upazila</option>
-            {upazila.map(item => (
-              <option key={item.id} value={item.bn_name}>
-                {item.bn_name}
+            {upazilas.map(upazila => (
+              <option key={upazila.id} value={upazila.id}>
+                {upazila.name}
               </option>
             ))}
           </select>
         </div>
-        {/* Similar input fields for district and upazila */}
-        {/* Search button */}
-      </div>
-      <div className="col-span-2">
         <button
-          className="bg-blue-500 text-white font-medium py-2 px-6 rounded-md hover:bg-blue-600 transition duration-300"
-          onClick={handleSearch}
+          type="submit"
+          className="mt-4 w-full inline-flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           Search
         </button>
-      </div>
-      {/* Display search results */}
-      <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-4">Search Results</h2>
-        <ul>
-          {searchResults.map((donor, index) => (
-            <li key={index}>
-              {donor.name} - {donor.bloodGroup} - {donor.district} -{' '}
-              {donor.upazila}
-            </li>
-          ))}
-        </ul>
+      </form>
+      <div className="mt-10">
+        {donors.length > 0 ? (
+          <div>
+            <h3 className="text-xl font-semibold mb-4">Donor Results</h3>
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr>
+                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Name
+                  </th>
+                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Blood Group
+                  </th>
+                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    District
+                  </th>
+                  <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                    Upazila
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {donors.map(donor => (
+                  <tr key={donor.id}>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {donor.name}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {donor.bloodGroup}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {donor.district}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      {donor.upazila}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p className="text-gray-500">
+            No donors found. Please search using the form above.
+          </p>
+        )}
       </div>
     </div>
   );
-};
+}
 
 export default SearchPage;

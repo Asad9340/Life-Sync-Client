@@ -8,7 +8,9 @@ function ContentManagement() {
   const [blogPost, setBlogPost] = useState([]);
   const [control, setControl] = useState(false);
   const [userData, setUserData] = useState([]);
+  const [statusFilter, setStatusFilter] = useState(''); // Add state for filter
   const { user } = useContext(AuthContext);
+
   useEffect(() => {
     (async () => {
       const { data } = await axios.get(
@@ -30,30 +32,38 @@ function ContentManagement() {
       `http://localhost:5000/blog-post/publish/${id}`
     );
     if (response.data.modifiedCount) {
-      Swal.fire('Successful updated Status to Publish');
+      Swal.fire('Successfully updated status to Publish');
       setControl(!control);
     }
   };
+
   const handleUnPublish = async id => {
     const response = await axios.patch(
       `http://localhost:5000/blog-post/unpublished/${id}`
     );
-    console.log(response);
     if (response.data.modifiedCount) {
-      Swal.fire('Successful updated Status to Draft');
+      Swal.fire('Successfully updated status to Draft');
       setControl(!control);
     }
   };
+
   const handleDelete = async id => {
     const response = await axios.delete(
       `http://localhost:5000/blog-post/delete/${id}`
     );
-    console.log(response);
     if (response.data.deletedCount) {
-      Swal.fire('Successful updated Status to Draft');
+      Swal.fire('Successfully deleted the blog post');
       setControl(!control);
     }
   };
+
+  const handleStatusChange = event => {
+    setStatusFilter(event.target.value); // Update filter state
+  };
+
+  const filteredBlogPosts = statusFilter
+    ? blogPost.filter(post => post.status === statusFilter)
+    : blogPost;
 
   return (
     <>
@@ -63,84 +73,100 @@ function ContentManagement() {
             Content Management Page
           </h2>
         </div>
-        <div className=" w-full  flex justify-end items-center">
+        <div className="w-full flex justify-end items-center">
           <Link to="/dashboard/content-management/add-blog">
             <button className="btn btn-info">Add Blog</button>
           </Link>
         </div>
       </div>
-      <div>
-        <div className="overflow-x-auto">
-          <table className="table">
-            {/* head */}
-            <thead>
-              <tr>
-                <th>Serial No:</th>
-                <th>Photo URL</th>
-                <th>Title</th>
-                <th>Content</th>
-                <th>Status</th>
-                {userData?.role === 'admin' && (
-                  <>
-                    <th></th>
-                    <th></th>
-                  </>
-                )}
-              </tr>
-            </thead>
-            <tbody>
-              {blogPost.map((item, index) => (
-                <tr key={item._id}>
-                  <th>{index + 1}</th>
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12">
-                          <img
-                            src={item.photoURL}
-                            alt="Avatar Tailwind CSS Component"
-                          />
-                        </div>
+      <div className="mb-4">
+        <label
+          className="block text-gray-700 text-sm font-bold mb-2"
+          htmlFor="status"
+        >
+          Filter by Status
+        </label>
+        <select
+          id="status"
+          value={statusFilter}
+          onChange={handleStatusChange}
+          className="block appearance-none w-full bg-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+        >
+          <option value="">All</option>
+          <option value="Draft">Draft</option>
+          <option value="Publish">Published</option>
+        </select>
+      </div>
+      <div className="overflow-x-auto">
+        <table className="table">
+          {/* head */}
+          <thead>
+            <tr>
+              <th>Serial No:</th>
+              <th>Photo URL</th>
+              <th>Title</th>
+              <th>Content</th>
+              <th>Status</th>
+              {userData?.role === 'admin' && (
+                <>
+                  <th></th>
+                  <th></th>
+                </>
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {filteredBlogPosts.map((item, index) => (
+              <tr key={item._id}>
+                <th>{index + 1}</th>
+                <td>
+                  <div className="flex items-center gap-3">
+                    <div className="avatar">
+                      <div className="mask mask-squircle w-12 h-12">
+                        <img
+                          src={item.photoURL}
+                          alt="Avatar Tailwind CSS Component"
+                        />
                       </div>
                     </div>
-                  </td>
-                  <td>{item.title}</td>
-                  <td>{item.content.slice(3, 50)}...</td>
-                  <td>{item.status === 'Draft' ? 'Draft' : 'Published'}</td>
-                  {userData?.role === 'admin' && (
-                    <td>
-                      {item.status === 'Draft' ? (
-                        <button
-                          onClick={() => handlePublish(item._id)}
-                          className="btn btn-primary"
-                        >
-                          Publish
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => handleUnPublish(item._id)}
-                          className="btn btn-secondary"
-                        >
-                          Unpublished
-                        </button>
-                      )}
-                    </td>
-                  )}
-                  {userData?.role === 'admin' && (
-                    <td>
+                  </div>
+                </td>
+                <td>{item.title}</td>
+                <td>{item.content.slice(3, 50)}...</td>
+                <td>{item.status === 'Draft' ? 'Draft' : 'Published'}</td>
+                {userData?.role === 'admin' && (
+                  <td>
+                    {item.status === 'Draft' ? (
                       <button
-                        onClick={() => handleDelete(item?._id)}
-                        className="btn btn-error"
+                        onClick={() => handlePublish(item._id)}
+                        className="btn btn-primary"
                       >
-                        Delete
+                        Publish
                       </button>
-                    </td>
-                  )}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                    ) : (
+                      <button
+                        onClick={() => handleUnPublish(item._id)}
+                        className="btn btn-secondary"
+                      >
+                        Unpublish
+                      </button>
+                    )}
+                  </td>
+                )}
+                {userData?.role === 'admin' && (
+                  <td>
+                    <button
+                      onClick={() => handleDelete(item?._id)}
+                      className="btn btn-error"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   );
