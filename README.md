@@ -32,6 +32,20 @@ Blood Donation Application is designed to streamline the process of blood donati
 - **Responsive Design**: Fully responsive across all devices.
 - **Environment Variables**: Used to secure Firebase and MongoDB credentials.
 
+
+## Technologies Used
+
+- React Router DOM
+- React Hot Toast
+- Sweet Alert 2
+- React Simple Typewriter
+- React Awesome Reveal
+- Swiper Slider
+- Tailwind CSS
+- Material Tailwind CSS
+- Firebase Authentication
+
+
 ## Setup and Installation
 To run this project locally, clone the repository and install the dependencies:
 ```bash
