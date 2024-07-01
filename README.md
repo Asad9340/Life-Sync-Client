@@ -35,7 +35,7 @@ Blood Donation Application is designed to streamline the process of blood donati
 ## Setup and Installation
 To run this project locally, clone the repository and install the dependencies:
 ```bash
-git clone https://github.com/asad9340/life-sync.git
+git clone https://github.com/Asad9340/Life-Sync-Client.git
 cd life-sync
 npm install
 npm start
